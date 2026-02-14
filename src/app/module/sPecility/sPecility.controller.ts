@@ -1,11 +1,17 @@
 import {  Request,  Response } from "express";
 import { specialityService } from "./sPecility.server";
 import catchAsync from "../../shared/catchAsync";
+import sendResponse from "../../shared/sendResPonse";
+
+
+
 
 const createSpeciality = catchAsync( async(req: Request ,res: Response) => {
     const payload = req.body
     const result = await specialityService.createSpeciality(payload)
-    res.status(201).json({
+    sendResponse(res, {
+        httpStatus: 201,
+        success: true,
         message: "Speciality created successfully",
         data: result
     })
