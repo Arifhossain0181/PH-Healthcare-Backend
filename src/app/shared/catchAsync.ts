@@ -9,11 +9,7 @@ const catchAsync = (fn: RequestHandler)=>{
         }
         catch(error ){
             console.log(error)
-            res.status(500).json({
-                success: false,
-                message: "An error occurred during the operation",
-                error: error instanceof Error ? error.message : "An unknown error occurred"
-            })
+            next(error)
         }
     }
 }

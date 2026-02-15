@@ -1,3 +1,4 @@
+import status from "http-status";
 import catchAsync from "../../shared/catchAsync";
 import sendResponse from "../../shared/sendResPonse";
 import { authService } from "./auth.service";
@@ -9,7 +10,7 @@ const register = catchAsync( async(req: Request ,res: Response) => {
        console.log('Received payload:', payload);
        const result = await authService.registerPaitent(payload);
        sendResponse(res ,{
-        httpStatus: 201,
+        httpStatus: status.CREATED,
         success: true,
         message: "Patient registered successfully",
         data: result
@@ -22,7 +23,7 @@ const login = catchAsync( async(req: Request ,res: Response) => {
     console.log('Received payload:', payload);
     const result = await authService.login(payload);
     sendResponse(res,{
-        httpStatus: 200,
+        httpStatus: status.OK,
         success: true,
         message: "Login successful",
         data: result

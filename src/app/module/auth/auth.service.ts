@@ -1,6 +1,9 @@
 
 import { auth } from "../../lib/auth";
-import { Role, UserStatus } from "../../../../prisma/generated/prisma/enums";
+import { UserStatus } from "../../../../prisma/generated/prisma";
+//import { Role} from "../../../../prisma/generated/prisma";
+import { prisma } from "../../lib/prisma";
+
 
 
 interface RegisterPatientPayload {
@@ -19,10 +22,8 @@ const registerPaitent = async (payload:RegisterPatientPayload)=>{
             name,
             email,
             password,
-            role: Role.PATIENT,
-            status: UserStatus.ACTIVE,
-            needPasswordReset: false,
-            isDeleted: false
+           // role: Role.PATIENT,
+           // status: UserStatus.ACTIVE
         }
 
     })
@@ -30,8 +31,27 @@ const registerPaitent = async (payload:RegisterPatientPayload)=>{
     throw new Error("User registration failed")
   }
 
-  //todo: create patient profile in the database
-  return data
+  //todo: create patient profile in the database 
+    const Patient = await prisma.$transaction(async (tx) => {
+        try {
+            const patientTx = await tx.patient.create({
+                data:{
+                    userId: data.user.id,
+                    name:payload.name,
+                    email:payload.email
+                    
+                }
+            })
+            return patientTx;
+        } catch(error){
+            console.log("Error creating patient profile:", error);
+            await prisma.user.delete({
+                where:{id: data.user.id}
+            })
+            throw error
+        }
+    })
+  return {...data, patient: Patient};
 }
  
 interface LoginPayload {
