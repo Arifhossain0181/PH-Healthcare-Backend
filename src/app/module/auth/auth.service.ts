@@ -1,5 +1,6 @@
 
 import { auth } from "../../lib/auth";
+import { Role, UserStatus } from "../../../../prisma/generated/prisma/enums";
 
 
 interface RegisterPatientPayload {
@@ -9,15 +10,19 @@ interface RegisterPatientPayload {
 }
 
 const registerPaitent = async (payload:RegisterPatientPayload)=>{
-    const {name,email,password} = payload;
+    if (!payload?.name || !payload?.email || !payload?.password) {
+        throw new Error('Name, email, and password are required');
+    }
+    const {name, email, password} = payload;
     const data= await auth.api.signUpEmail({
         body:{
             name,
             email,
             password,
-            //default values for additional fields
-           // needsPasswordReset: false,
-           // role:Role.PATIENT
+            role: Role.PATIENT,
+            status: UserStatus.ACTIVE,
+            needPasswordReset: false,
+            isDeleted: false
         }
 
     })
@@ -28,6 +33,29 @@ const registerPaitent = async (payload:RegisterPatientPayload)=>{
   //todo: create patient profile in the database
   return data
 }
+ 
+interface LoginPayload {
+    email: string;
+    password: string;
+}
+
+const login = async(payload: LoginPayload) => 
+    {
+        const {email, password} = payload;
+    const result = await auth.api.signInEmail({
+        body:{
+            email,
+            password}
+    })
+    if(result.user.status === UserStatus.BLOCKED){
+        throw new Error("Your account is blocked. Please contact support.")
+    }
+    if(result.user.status === UserStatus.DELETED){
+        throw new Error("Your account is deleted. Please contact support.")
+    }
+    return result;
+}
 export const authService = {
-    registerPaitent
+    registerPaitent,
+    login   
 }

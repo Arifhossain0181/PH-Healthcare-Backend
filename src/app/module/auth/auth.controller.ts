@@ -5,9 +5,9 @@ import { Request, Response } from "express";
 
 
 const register = catchAsync( async(req: Request ,res: Response) => {
-       const payload = req.body
-       console.log(payload)
-       const result = await authService.registerPaitent(payload)
+       const payload = req.body || {};
+       console.log('Received payload:', payload);
+       const result = await authService.registerPaitent(payload);
        sendResponse(res ,{
         httpStatus: 201,
         success: true,
@@ -16,6 +16,19 @@ const register = catchAsync( async(req: Request ,res: Response) => {
        })
       
 })
+
+const login = catchAsync( async(req: Request ,res: Response) => {
+    const payload = req.body || {};
+    console.log('Received payload:', payload);
+    const result = await authService.login(payload);
+    sendResponse(res,{
+        httpStatus: 200,
+        success: true,
+        message: "Login successful",
+        data: result
+    })
+})
 export const authController = {
-    register
+    register,
+    login
 }

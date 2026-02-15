@@ -11,7 +11,7 @@ const catchAsync = (fn: RequestHandler)=>{
             console.log(error)
             res.status(500).json({
                 success: false,
-                message: "An failed speciality operation",
+                message: "An error occurred during the operation",
                 error: error instanceof Error ? error.message : "An unknown error occurred"
             })
         }
