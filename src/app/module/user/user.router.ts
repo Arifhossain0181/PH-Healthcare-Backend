@@ -34,19 +34,34 @@ const createDoctorZod = z.object({
 });
 
 const router = Router();
+const validation = (zodSchema :z.ZodObject) => 
+  {
+     return (req:Request, res:Response, next:NextFunction) => {
+   const parseResult = zodSchema.safeParse(req.body);
+    if(!parseResult.success){
+        next(parseResult.error);
+    }
+    //sanitized and validated data is in parseResult.data
+      req.body = parseResult.data;
+      next();
+     }
+}
+
 
 router.post(
   "/create-doctor",
-  (req: Request, res: Response, next: NextFunction) => {
-    const parseResult = createDoctorZod.safeParse(req.body);
-    if(!parseResult.success){
-        next(parseResult.error);
-       
-    }
-    //sanitized and validated data is in parseResult.data
-        req.body = parseResult.data;
-        next();
-  },
+  // (req: Request, res: Response, next: NextFunction) =>
+    //    {
+    //   const parseResult = createDoctorZod.safeParse(req.body);
+    //   if(!parseResult.success){
+    //       next(parseResult.error);
+        
+    //   }
+    //   //sanitized and validated data is in parseResult.data
+    //       req.body = parseResult.data;
+    //       next();
+    // },
+  validation(createDoctorZod),
   UserController.createDoctor,
 );
 router.get("/getAlldoctors", DoctorController.getAllDoctors);
