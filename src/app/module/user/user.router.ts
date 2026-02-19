@@ -1,35 +1,43 @@
-import {  Router } from "express";
+import { Router } from "express";
 import { UserController } from "./user.controller";
 import { DoctorController } from "../doctor/doctor.controller";
 
-import { createDoctorZod } from "./user.validation";
+import { createDoctorZod, createAdminZod, createSuperAdminZod } from "./user.validation";
 import validation from "../../middleware/validateRequest";
 import { updateDoctorZod } from "../doctor/doctor.validation";
+import { checkAuth } from "../../middleware/checkauth";
+import { Role } from "../../../../prisma/generated/prisma";
 
 const router = Router();
 
+// Create Admin - Super Admin only
+router.post(
+  "/create-admin",
+  checkAuth([Role.SUPER_ADMIN]),
+  validation(createAdminZod),
+  UserController.createAdmin
+);
 
+// Create Super Admin - Super Admin only
+router.post(
+  "/create-super-admin",
+  checkAuth([Role.SUPER_ADMIN]),
+  validation(createSuperAdminZod),
+  UserController.createSuperAdmin
+);
 
-
+// Create Doctor - Admin and SuperAdmin only
 router.post(
   "/create-doctor",
-  // (req: Request, res: Response, next: NextFunction) =>
-    //    {
-    //   const parseResult = createDoctorZod.safeParse(req.body);
-    //   if(!parseResult.success){
-    //       next(parseResult.error);
-        
-    //   }
-    //   //sanitized and validated data is in parseResult.data
-    //       req.body = parseResult.data;
-    //       next();
-    // },
+  checkAuth([Role.ADMIN, Role.SUPER_ADMIN]),
   validation(createDoctorZod),
-  UserController.createDoctor,
+  UserController.createDoctor
 );
-router.get("/getAlldoctors", DoctorController.getAllDoctors);
-router.get("/getDoctor/:id", DoctorController.getDoctorById);
-router.patch("/updateDoctor/:id", validation(updateDoctorZod),  DoctorController.updateDoctor);
-router.delete("/deleteDoctor/:id", DoctorController.deleleteDoctor);
+
+// Doctor routes - Admin and SuperAdmin only
+router.get("/doctors", checkAuth([Role.ADMIN, Role.SUPER_ADMIN]), DoctorController.getAllDoctors);
+router.get("/doctors/:id", checkAuth([Role.ADMIN, Role.SUPER_ADMIN]), DoctorController.getDoctorById);
+router.patch("/doctors/:id", checkAuth([Role.ADMIN, Role.SUPER_ADMIN]), validation(updateDoctorZod), DoctorController.updateDoctor);
+router.delete("/doctors/:id", checkAuth([Role.ADMIN, Role.SUPER_ADMIN]), DoctorController.softDeleteDoctor);
 
 export default router;

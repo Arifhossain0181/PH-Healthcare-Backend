@@ -1,0 +1,18 @@
+model DoctorSchedules {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  doctorId   String   @db.Uuid
+  scheduleId String   @db.Uuid
+  isBooked   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relations
+  doctor   Doctor   @relation(fields: [doctorId], references: [id])
+  schedule Schedule @relation(fields: [scheduleId], references: [id])
+
+  // An appointment is associated with this specific doctor's schedule slot
+  appointment Appointment?
+
+  @@unique([doctorId, scheduleId])
+  @@map("doctor_schedules")
+}

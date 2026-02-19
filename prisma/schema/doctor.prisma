@@ -1,6 +1,6 @@
 
 model Doctor {
-  id String @id @default(uuid())
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
 
   name          String
   email         String    @unique
@@ -24,10 +24,14 @@ model Doctor {
   // Relations
   userId String @unique
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  doctorSchedules   DoctorSchedules[]
+  specialties       DoctorSpecialty[]
+  appointments      Appointment[]
+  reviews           Review[]
+  medicalReports    MedicalReport[]
+  prescriptions     Prescription[]
 
-  specialties DoctorSpecialty[]
-
- @@index([email], name: "doctor_email_index")
-    @@index([deletedAt], name: "doctor_deletedAt_index")
+  @@index([email], name: "doctor_email_index")
+  @@index([deletedAt], name: "doctor_deletedAt_index")
   @@map("doctor")
 }

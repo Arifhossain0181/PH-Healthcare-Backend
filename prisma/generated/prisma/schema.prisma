@@ -1,3 +1,28 @@
+model Appointment {
+  id               String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  patientId        String            @db.Uuid
+  doctorId         String            @db.Uuid
+  doctorScheduleId String            @unique @db.Uuid
+  videoCallingId   String
+  status           AppointmentStatus @default(SCHEDULED)
+  paymentStatus    PaymentStatus     @default(UNPAID)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  // Relations
+  patient        Patient         @relation(fields: [patientId], references: [id])
+  doctor         Doctor          @relation(fields: [doctorId], references: [id])
+  doctorSchedule DoctorSchedules @relation(fields: [doctorScheduleId], references: [id])
+
+  // One appointment can have one payment, review, prescription, and medical report
+  payment       Payment?
+  review        Review?
+  prescription  Prescription?
+  medicalReport MedicalReport?
+
+  @@map("appointments")
+}
+
 model User {
   id                String     @id
   name              String
@@ -68,7 +93,7 @@ model Verification {
 }
 
 model Doctor {
-  id String @id @default(uuid())
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
 
   name                 String
   email                String    @unique
@@ -90,14 +115,37 @@ model Doctor {
   updatedAt            DateTime  @updatedAt
 
   // Relations
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  specialties DoctorSpecialty[]
+  userId          String            @unique
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  doctorSchedules DoctorSchedules[]
+  specialties     DoctorSpecialty[]
+  appointments    Appointment[]
+  reviews         Review[]
+  medicalReports  MedicalReport[]
+  prescriptions   Prescription[]
 
   @@index([email], name: "doctor_email_index")
   @@index([deletedAt], name: "doctor_deletedAt_index")
   @@map("doctor")
+}
+
+model DoctorSchedules {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  doctorId   String   @db.Uuid
+  scheduleId String   @db.Uuid
+  isBooked   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relations
+  doctor   Doctor   @relation(fields: [doctorId], references: [id])
+  schedule Schedule @relation(fields: [scheduleId], references: [id])
+
+  // An appointment is associated with this specific doctor's schedule slot
+  appointment Appointment?
+
+  @@unique([doctorId, scheduleId])
+  @@map("doctor_schedules")
 }
 
 enum Role {
@@ -113,9 +161,159 @@ enum UserStatus {
   DELETED
 }
 
+enum AppointmentStatus {
+  SCHEDULED
+  INPROGRESS
+  COMPLETED
+  CANCELED
+}
+
+enum PaymentStatus {
+  PAID
+  UNPAID
+}
+
 enum Gender {
   MALE
   FEMALE
+  OTHER
+}
+
+enum BloodGroup {
+  A_POSITIVE
+  A_NEGATIVE
+  B_POSITIVE
+  B_NEGATIVE
+  AB_POSITIVE
+  AB_NEGATIVE
+  O_POSITIVE
+  O_NEGATIVE
+}
+
+enum MaritalStatus {
+  MARRIED
+  UNMARRIED
+  DIVORCED
+  WIDOWED
+}
+
+model MedicalReport {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  patientId     String    @db.Uuid
+  doctorId      String    @db.Uuid
+  appointmentId String    @unique @db.Uuid
+  diagnosis     String
+  treatment     String
+  followUpDate  DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  patient     Patient     @relation(fields: [patientId], references: [id])
+  doctor      Doctor      @relation(fields: [doctorId], references: [id])
+  appointment Appointment @relation(fields: [appointmentId], references: [id])
+
+  @@map("medical_reports")
+}
+
+// This file is deprecated. Use userPatient.prisma instead.
+// Patient model is defined in userPatient.prisma to avoid duplication.
+
+model PatientHealthData {
+  id                  String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  patientId           String        @unique @db.Uuid
+  gender              Gender
+  dateOfBirth         DateTime
+  bloodGroup          BloodGroup
+  hasAllergies        Boolean       @default(false)
+  hasDiabetes         Boolean       @default(false)
+  height              String
+  weight              String
+  smokingStatus       Boolean       @default(false)
+  dietaryPreferences  String?
+  pregnancyStatus     Boolean       @default(false)
+  mentalHealthHistory String?
+  immunizationStatus  String?
+  hasPastSurgeries    Boolean       @default(false)
+  recentAnxiety       Boolean       @default(false)
+  recentDepression    Boolean       @default(false)
+  maritalStatus       MaritalStatus @default(UNMARRIED)
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+
+  // Relations
+  patient Patient @relation(fields: [patientId], references: [id])
+
+  @@map("patient_health_data")
+}
+
+model Payment {
+  id            String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  appointmentId String        @unique @db.Uuid
+  amount        Float
+  paymentMethod String?
+  transactionId String?       @unique
+  status        PaymentStatus @default(UNPAID)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  // Relations
+  appointment Appointment @relation(fields: [appointmentId], references: [id])
+
+  @@map("payments")
+}
+
+model Prescription {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  appointmentId String   @unique @db.Uuid
+  doctorId      String   @db.Uuid
+  patientId     String   @db.Uuid
+  medication    String
+  dosage        String
+  dosageUnit    String
+  frequency     String
+  duration      String
+  instructions  String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  appointment Appointment @relation(fields: [appointmentId], references: [id])
+  doctor      Doctor      @relation(fields: [doctorId], references: [id])
+  patient     Patient     @relation(fields: [patientId], references: [id])
+
+  @@map("prescriptions")
+}
+
+model Review {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  patientId     String   @db.Uuid
+  doctorId      String   @db.Uuid
+  appointmentId String   @unique @db.Uuid
+  rating        Float
+  comment       String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  patient     Patient     @relation(fields: [patientId], references: [id])
+  doctor      Doctor      @relation(fields: [doctorId], references: [id])
+  appointment Appointment @relation(fields: [appointmentId], references: [id])
+
+  @@map("reviews")
+}
+
+model Schedule {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  startDate DateTime
+  endDate   DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  doctorSchedules DoctorSchedules[]
+
+  @@map("schedules")
 }
 
 // This is your Prisma schema file,
@@ -136,7 +334,7 @@ datasource db {
 }
 
 model Specialty {
-  id String @id @default(uuid(7))
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
 
   title       String  @unique @db.VarChar(255)
   description String? @db.VarChar(505)
@@ -156,9 +354,9 @@ model Specialty {
 }
 
 model DoctorSpecialty {
-  id          String   @id @default(uuid(7))
-  doctorId    String
-  specialtyId String
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  doctorId    String   @db.Uuid
+  specialtyId String   @db.Uuid
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -173,7 +371,7 @@ model DoctorSpecialty {
 }
 
 model Patient {
-  id String @id @default(uuid())
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
 
   name          String
   email         String    @unique
@@ -188,6 +386,12 @@ model Patient {
   // Relations
   userId String @unique
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  patientHealthData PatientHealthData?
+  appointments      Appointment[]
+  reviews           Review[]
+  medicalReports    MedicalReport[]
+  prescriptions     Prescription[]
 
   @@index([email], name: "email_index")
   @@index([deletedAt], name: "deletedAt_index")

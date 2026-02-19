@@ -1,0 +1,21 @@
+model Prescription {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  appointmentId String   @unique @db.Uuid
+  doctorId      String   @db.Uuid
+  patientId     String   @db.Uuid
+  medication    String
+  dosage        String
+  dosageUnit    String
+  frequency     String
+  duration      String
+  instructions  String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  appointment   Appointment @relation(fields: [appointmentId], references: [id])
+  doctor        Doctor      @relation(fields: [doctorId], references: [id])
+  patient       Patient     @relation(fields: [patientId], references: [id])
+
+  @@map("prescriptions")
+}

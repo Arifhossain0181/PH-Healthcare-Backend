@@ -3,6 +3,77 @@ import { ICreateDoctorPlayload } from "./user.interface";
 import { prisma } from "../../lib/prisma";
 import { auth } from "../../lib/auth";
 import { Role } from "../../../../prisma/generated/prisma";
+import { CreateAdminInput, CreateSuperAdminInput } from "./user.validation";
+import APPError from "../../errorhelPers/APPError";
+import status from "http-status";
+
+const createAdmin = async (payload: CreateAdminInput) => {
+  const userExists = await prisma.user.findUnique({
+    where: { email: payload.email },
+  });
+
+  if (userExists) {
+    throw new APPError("User already exists with this email", status.CONFLICT);
+  }
+
+  const userData = await auth.api.signUpEmail({
+    body: {
+      email: payload.email,
+      password: payload.password,
+      name: payload.name,
+      role: Role.ADMIN,
+      needPasswordReset: true,
+      status: "ACTIVE",
+    },
+  });
+
+  if (!userData.user?.id) {
+    throw new APPError("Failed to create admin user", status.INTERNAL_SERVER_ERROR);
+  }
+
+  return {
+    id: userData.user.id,
+    name: userData.user.name,
+    email: userData.user.email,
+    role: Role.ADMIN,
+    status: "ACTIVE",
+    message: "Admin created successfully",
+  };
+};
+
+const createSuperAdmin = async (payload: CreateSuperAdminInput) => {
+  const userExists = await prisma.user.findUnique({
+    where: { email: payload.email },
+  });
+
+  if (userExists) {
+    throw new APPError("User already exists with this email", status.CONFLICT);
+  }
+
+  const userData = await auth.api.signUpEmail({
+    body: {
+      email: payload.email,
+      password: payload.password,
+      name: payload.name,
+      role: Role.SUPER_ADMIN,
+      needPasswordReset: true,
+      status: "ACTIVE",
+    },
+  });
+
+  if (!userData.user?.id) {
+    throw new APPError("Failed to create super admin user", status.INTERNAL_SERVER_ERROR);
+  }
+
+  return {
+    id: userData.user.id,
+    name: userData.user.name,
+    email: userData.user.email,
+    role: Role.SUPER_ADMIN,
+    status: "ACTIVE",
+    message: "Super Admin created successfully",
+  };
+};
 
 const createDoctor = async (payload: ICreateDoctorPlayload) => {
   const specialities: Specialty[] = [];
@@ -123,5 +194,7 @@ const createDoctor = async (payload: ICreateDoctorPlayload) => {
 };
 
 export const UserService = {
+  createAdmin,
+  createSuperAdmin,
   createDoctor,
 };

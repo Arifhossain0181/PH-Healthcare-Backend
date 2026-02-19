@@ -1,6 +1,28 @@
-import z from "zod";  
+import z from "zod";
 
-  
+export const createAdminZod = z.object({
+  name: z.string("Name is required").min(3, "Name must be at least 3 characters long"),
+  email: z.string("Email is required").email("Invalid email format"),
+  password: z.string("Password is required").min(6, "Password must be at least 6 characters long"),
+});
+
+export type CreateAdminInput = z.infer<typeof createAdminZod>;
+
+export const updateAdminZod = z.object({
+  name: z.string().min(3, "Name must be at least 3 characters long").optional(),
+  email: z.string().email("Invalid email format").optional(),
+}).partial();
+
+export type UpdateAdminInput = z.infer<typeof updateAdminZod>;
+
+export const createSuperAdminZod = z.object({
+  name: z.string("Name is required").min(3, "Name must be at least 3 characters long"),
+  email: z.string("Email is required").email("Invalid email format"),
+  password: z.string("Password is required").min(6, "Password must be at least 6 characters long"),
+});
+
+export type CreateSuperAdminInput = z.infer<typeof createSuperAdminZod>;
+
 export const createDoctorZod = z.object({
   password: z
     .string("Password is required")
@@ -19,8 +41,8 @@ export const createDoctorZod = z.object({
     address: z.string().min(5, "Address must be at least 5 characters long").max(100, "Address must be less than 100 characters long").optional(),
     specialization: z.string().optional(),
     experience: z.number().nonnegative("Experience must be a non-negative number").optional(),
-    gender: z.enum(["MALE", "FEMALE", "OTHER"]),
-    registationNumber: z.string().optional(),
+    gender: z.enum(["MALE", "FEMALE"]),
+    registrationNumber: z.string().optional(),
     appointmentFee: z.number().nonnegative("Appointment fee must be a non-negative number").optional(),
     qualifications: z.string().min(5, "Qualifications must be at least 5 characters long").max(100, "Qualifications must be less than 100 characters long").optional(),
     curreentWorkingPlace: z.string().min(5, "Current working place must be at least 5 characters long").max(100, "Current working place must be less than 100 characters long").optional(),
@@ -29,3 +51,5 @@ export const createDoctorZod = z.object({
   }),
   specialties:(z.array(z.string()).min(1, "At least one specialty is required")),
 });
+
+export type CreateDoctorInput = z.infer<typeof createDoctorZod>;

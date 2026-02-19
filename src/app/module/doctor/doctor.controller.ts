@@ -42,22 +42,25 @@ const updateDoctor = catchAsync(
     }
 );
 
-const deleleteDoctor = catchAsync(
+const softDeleteDoctor = catchAsync(
     async(req: Request, res: Response) => {
         const { id } = req.params;
-        await DoctorService.deleleteDoctor(id as string);
+        await DoctorService.softDeleteDoctor(id as string);
         sendResponse(res, {
             httpStatus: status.OK,
             success: true,
             message: "Doctor deleted successfully",
         });
-    });
+    }
+);
+
+
 
 export const DoctorController = {
     getAllDoctors,
     getDoctorById,
     updateDoctor,
-    deleleteDoctor
+    softDeleteDoctor
 };
         
        
