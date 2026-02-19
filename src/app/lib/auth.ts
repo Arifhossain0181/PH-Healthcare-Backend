@@ -3,6 +3,7 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma";
 import { Role, UserStatus } from "../../../prisma/generated/prisma";
 
+
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql", // or "mysql", "postgresql", ...etc
@@ -33,6 +34,13 @@ export const auth = betterAuth({
         defaultValue:false,
         required:true,
       }
+    }
+  },
+  session:{
+    expiresIn: 7 * 24 * 60 * 60, // 7 days in seconds
+    updateAge: 24 * 60 * 60, // 1 day in seconds  
+    cookieCache: {
+      enabled: false, // Disable to avoid maxAge issues
     }
   },
 

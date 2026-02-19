@@ -5,6 +5,8 @@ import { envVars } from "../config/env";
 import z from "zod";
 import { error } from "node:console";
 import { handleZodErrors } from "../errorhelPers/handleZoderrors";
+
+
 interface TErrorSoucrece{
     path: string;
     message: string;
@@ -15,7 +17,7 @@ export const globalErrorHandler = (err: Error, req: Request, res: Response, _nex
     if(envVars.NODE_ENV === "development"){
         console.error("Error from global error handler:",err);
     }
-    const errorsoucrce: TErrorSoucrece[] = []
+    let errorsoucrce: TErrorSoucrece[] = []
    let statusCode: number = status.INTERNAL_SERVER_ERROR;
 let message: string = "Internal server error";
 let stack: string | undefined = undefined
@@ -31,6 +33,12 @@ else if(err instanceof Error){
     statusCode = status.INTERNAL_SERVER_ERROR;
     message = err.message || "Internal server error";
     stack = err.stack;
+    errorsoucrce=[
+        {
+            path:"",
+            message: err.message || "Internal server error"
+        }
+    ]
 }
       
 
