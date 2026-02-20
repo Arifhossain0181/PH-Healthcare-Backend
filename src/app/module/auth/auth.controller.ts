@@ -59,7 +59,47 @@ const login = catchAsync( async(req: Request ,res: Response) => {
         }
     })
 })
+const getMe = catchAsync( async(req: Request ,res: Response) => {
+    const user = req.user;
+    const result = await authService.getMe(user);
+    sendResponse(res,{
+        httpStatus: status.OK,
+        success: true,
+        message: "User data retrieved successfully",
+        data: result
+    })
+})
+
+const getnewtoken = catchAsync( async(req: Request ,res: Response) => {
+    const refreshtoken = req.cookies.refreshToken;
+    const betterauthsessionToken = req.cookies["better-auth.session-token"];
+    if (!refreshtoken) {
+        return sendResponse(res, {
+            httpStatus: status.UNAUTHORIZED,
+            success: false,
+            message: "Refresh token not found",
+        });
+    }
+    const result = await authService.getNewAccessToken(refreshtoken , betterauthsessionToken);
+    const {accessToken,refreshToken: newRefreshToken ,sessionToken} = result;
+    tokenUtilits.setaccesstokencookie(res, accessToken);
+    tokenUtilits.setrefreshtokencookie(res, newRefreshToken);
+    tokenUtilits.setBetterAuthCookies(res, sessionToken);
+    sendResponse(res,{
+        httpStatus: status.OK,
+        success: true,
+        message: "New access token generated successfully",
+        data: {
+            accessToken,
+            refreshToken: newRefreshToken,
+            sessionToken
+        }
+    })
+})
+
 export const authController = {
     register,
-    login
+    login,
+    getMe,
+    getnewtoken
 }

@@ -8,14 +8,14 @@ const router = Router();
 // Get all admins - Super Admin only
 router.get(
   "/",
-  checkAuth([Role.SUPER_ADMIN]),
+  checkAuth([Role.SUPER_ADMIN ,Role.ADMIN]),
   adminController.getAllAdmins
 );
 
 // Get admin by ID - Super Admin only
 router.get(
   "/:id",
-  checkAuth([Role.SUPER_ADMIN]),
+  checkAuth([Role.SUPER_ADMIN ,Role.ADMIN]),
   adminController.getAdminById
 );
 

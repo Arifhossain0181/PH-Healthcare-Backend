@@ -55,6 +55,11 @@ try{
         if(authRoles.length > 0 && !authRoles.includes(user.role)){
             throw new Error("Unauthorized: Insufficient permissions");
         }
+        req.user = {
+            userId: user.id,
+            email: user.email,
+            role: user.role,
+        }
  
         const accesstoken = cookieUtils.getCookies(req, "accessToken");
         if(!accesstoken){
@@ -64,6 +69,9 @@ try{
         if(!verfiedToken.success){
             throw new Error("Unauthorized: Invalid access token");
         }
+
+      
+
         next();
     } else {
         return res.status(401).json({

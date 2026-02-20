@@ -3,6 +3,7 @@ import { Role,  } from "../../../../prisma/generated/prisma";
 import APPError from "../../errorhelPers/APPError";
 import status from "http-status";
 import {  UpdateAdminInput } from "./admin.validation";
+import { IRequest } from "../../interface/request.interface";
 
 export const adminService = {
   // Get all admins
@@ -84,7 +85,7 @@ export const adminService = {
   },
 
   // Soft delete admin
-  async softDeleteAdmin(adminId: string) {
+  async softDeleteAdmin(adminId: string , user: IRequest) {
     const admin = await prisma.user.findUnique({
       where: { id: adminId },
     });
@@ -95,7 +96,12 @@ export const adminService = {
         status.NOT_FOUND
       );
     }
-
+    if(admin.id === user.userId){
+      throw new APPError(
+        "You cannot delete yourself",
+        status.FORBIDDEN
+      );
+    }
     const deletedAdmin = await prisma.user.update({
       where: { id: adminId },
       data: {

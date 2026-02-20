@@ -45,7 +45,8 @@ export const adminController = {
   // Soft delete admin
   deleteAdmin: catchAsync(async (req: Request, res: Response) => {
     const { id } = req.params;
-    const result = await adminService.softDeleteAdmin(id as string);
+    const user = req.user; // Assuming you have user information in the request
+    const result = await adminService.softDeleteAdmin(id as string , user);
     sendResponse(res, {
       httpStatus: status.OK,
       success: true,
