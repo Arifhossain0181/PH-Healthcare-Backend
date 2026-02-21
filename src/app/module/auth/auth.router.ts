@@ -9,4 +9,7 @@ router.post("/register",authController.register)
 router.post("/login",authController.login)
 router.get("/me",checkAuth([Role.PATIENT ,Role.SUPER_ADMIN ,Role.DOCTOR ,Role.ADMIN]),authController.getMe)
 router.post("/refresh-token",authController.getnewtoken)
+router.post("/change-password",checkAuth([Role.PATIENT ,Role.SUPER_ADMIN ,Role.DOCTOR ,Role.ADMIN]),authController.changePassword)
+router.post("/logout",checkAuth([Role.PATIENT ,Role.SUPER_ADMIN ,Role.DOCTOR ,Role.ADMIN]),authController.logout)
+
 export default router 

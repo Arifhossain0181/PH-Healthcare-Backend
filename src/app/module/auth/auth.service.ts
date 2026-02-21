@@ -7,6 +7,8 @@ import { IRequest } from "../../interface/request.interface";
 import jwtUtils from "../../ulitis/jwt";
 import { envVars } from "../../config/env";
 import { JwtPayload } from "jsonwebtoken";
+import { IchangePassword } from "./auth.interface";
+
 
 interface RegisterPatientPayload {
   name: string;
@@ -158,17 +160,20 @@ const getMe = async (user: IRequest) => {
 }
 
 const getNewAccessToken = async (sessionToken: string, refreshToken: string) => {
+  if (!sessionToken) {
+    throw new Error("Session token required");
+  }
   const issessiontokenexits = await prisma.session.findUnique({
     where: {
       token: sessionToken,
-    
-  }
- ,   include: {
-    user: true,
-  }
+    },
+    include: {
+      user: true,
+    }
   });
   if (!issessiontokenexits) {
-    throw new Error("Invalid session token");}
+    throw new Error("Invalid session token");
+  }
 
   const verfitedRefreshToken =jwtUtils.verifytoken(refreshToken ,envVars.REFRESH_TOKEN_SECRET);
   
@@ -216,9 +221,73 @@ const getNewAccessToken = async (sessionToken: string, refreshToken: string) => 
     sessionToken: token
   }
 }
+
+
+const changePassword = async (payload: IchangePassword, sessionToken: string) => {
+  const session = await auth.api.getSession({
+    headers: {
+      Authorization: `Bearer ${sessionToken}`,
+    },
+  });
+  if (!session || !session.user) {
+    throw new Error("Invalid session");
+  }
+  const { currentPassword, newPassword } = payload;
+  const result = await auth.api.changePassword({
+    body: {
+      currentPassword,
+      newPassword,
+      revokeOtherSessions: true,
+    },
+    headers: {
+      Authorization: `Bearer ${sessionToken}`,
+    },
+  });
+  
+  const  accesstoken = tokenUtilits.getAccessTokenFromHeader({
+    userId: session.user.id,
+    email: result.user.email,
+    name: result.user.name,
+    role: result.user.role,
+    status: result.user.status,
+    isDeleted: result.user.isDeleted,
+    emailVerified: result.user.emailVerified,
+
+  });
+  const refreshToken = tokenUtilits.getRefreshTokenFromHeader({
+    userId: session.user.id,
+    email: session.user.email,
+    name: session.user.name,
+    role: session.user.role,
+    status: session.user.status,
+    isDeleted: session.user.isDeleted,
+    emailVerified: session.user.emailVerified,
+
+  });
+
+  return { ...result, accessToken: accesstoken, refreshToken }; 
+}
+
+const logout = async (sessionToken: string) => {
+
+  const result = await auth.api.signOut({
+    headers: {
+      Authorization: `Bearer ${sessionToken}`,
+    },
+  });
+  return result;
+}
+  
+
+
+
+
+
 export const authService = {
   registerPaitent,
   login,
   getMe,
-  getNewAccessToken
+  getNewAccessToken,
+  changePassword,
+  logout
 };

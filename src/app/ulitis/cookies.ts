@@ -8,8 +8,13 @@ const setCookies = (res: Response,key:string, value: string ,options: CookieOpti
 const getCookies = (req: Request, key: string) => {
   return req.cookies[key];
 }
-const clearCookies = (res: Response, key: string) => {
-    res.clearCookie(key);
+// allow passing cookie options when clearing
+const clearCookies = (res: Response, key: string, options?: CookieOptions) => {
+    if (options) {
+        res.clearCookie(key, options);
+    } else {
+        res.clearCookie(key);
+    }
 }
 export const cookieUtils = {
     setCookies,
