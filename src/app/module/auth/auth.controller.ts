@@ -8,6 +8,7 @@ import { IchangePassword } from "./auth.interface";
 import { cookieUtils } from "../../ulitis/cookies";
 
 
+
 const register = catchAsync( async(req: Request ,res: Response) => {
        const payload = req.body || {};
        console.log('Received payload:', payload);
@@ -185,11 +186,23 @@ const logout = catchAsync( async(req: Request ,res: Response) => {
 
 })
 
+const verifyEmail = catchAsync( async(req: Request ,res: Response) => {
+    const { email, otp } = req.body || {};
+    const result = await authService.verifyEmail(email, otp);
+    sendResponse(res,{
+        httpStatus: status.OK,
+        success: true,
+        message: "Email verification successful",
+        data: result
+    })
+})
+
 export const authController = {
     register,
     login,
     getMe,
     getnewtoken,
     changePassword,
-    logout
+    logout,
+    verifyEmail
 }

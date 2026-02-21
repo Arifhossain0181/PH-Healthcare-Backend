@@ -11,5 +11,6 @@ router.get("/me",checkAuth([Role.PATIENT ,Role.SUPER_ADMIN ,Role.DOCTOR ,Role.AD
 router.post("/refresh-token",authController.getnewtoken)
 router.post("/change-password",checkAuth([Role.PATIENT ,Role.SUPER_ADMIN ,Role.DOCTOR ,Role.ADMIN]),authController.changePassword)
 router.post("/logout",checkAuth([Role.PATIENT ,Role.SUPER_ADMIN ,Role.DOCTOR ,Role.ADMIN]),authController.logout)
+router.post("/verify-email",authController.verifyEmail)
 
 export default router 
