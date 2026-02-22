@@ -225,11 +225,10 @@ const googleLogin = catchAsync( async(req: Request ,res: Response) => {
     const redirectPath = req.query.redirect as string || "/dashboard";
     const endocdedRedirectPath = encodeURIComponent(redirectPath);
     const callbackURL = envVars.GOOGLE_CALLBACK_URI || `${envVars.BETTER_AUTH_URL || "http://localhost:5000"}/api/v1/auth/google/success?redirect=${endocdedRedirectPath}`;
+    console.log('googleLogin callbackURL:', callbackURL);
     res.render("google",{
         callbackURL,
         betterAuthURL: envVars.BETTER_AUTH_URL || "http://localhost:5000",
-        betterAuthUrl: envVars.BETTER_AUTH_URL || "http://localhost:5000",
-        
     })
     
 })

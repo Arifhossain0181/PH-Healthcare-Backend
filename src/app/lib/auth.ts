@@ -122,7 +122,7 @@ export const auth = betterAuth({
     }
   },
   redirectURLs:{
-    signIn: envVars.GOOGLE_CALLBACK_URI || `${envVars.BETTER_AUTH_URL || "http://localhost:5000"}/api/auth/callback/google`
+    signIn: envVars.GOOGLE_CALLBACK_URI || `${envVars.BETTER_AUTH_URL || "http://localhost:5000"}/api/v1/auth/google/success`
 
   },
 

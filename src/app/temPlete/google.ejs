@@ -8,6 +8,7 @@
 <body>
     <div>
         <h4>Redirection to Google .....</h4>
+        <p id="debug-callback">callbackURL: <%= callbackURL %></p>
     </div>
     
 </body>
@@ -15,7 +16,7 @@
     (
         async () =>{
             try{
-                const response = await fetch("<%= (typeof betterAuthUrl !== 'undefined' ? betterAuthUrl : betterAuthURL) %>/api/auth/sign-in/social",{
+                const response = await fetch("<%= betterAuthURL %>/api/auth/sign-in/social",{
                     method:"POST",
                     headers:{
                         "Content-Type":"application/json"
