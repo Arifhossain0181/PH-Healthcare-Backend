@@ -21,6 +21,10 @@ interface EnvConfig {
     EMAIL_SENDER_SMTP_HOST: string;
     EMAIL_SENDER_SMTP_PORT: number;
     EMAIL_SENDER_SMTP_SECURE: boolean;
+    GOOGLE_CLIENT_ID: string;
+    GOOGLE_CLIENT_SECRET: string;
+    GOOGLE_CALLBACK_URI: string;
+    FRONTEND_URL: string;
       
 }
 
@@ -28,7 +32,8 @@ const loadenv = (): EnvConfig => {
     const requiredVars = ['NODE_ENV', 'PORT', 'DATABASE_URL', 'BETTER_AUTH_SECRET', 'BETTER_AUTH_URL',
     'ACCESS_TOKEN_SECRET', 'REFRESH_TOKEN_SECRET', 'ACCESS_TOKEN_EXPIRES_IN', 'REFRESH_TOKEN_EXPIRES_IN',
     'BETTER_AUTH_SESSION_TOKEN_EXPIRES_IN', 'BETTER_AUTH_SESSION_TOKEN_UPDATE_AGE',
-    'EMAIL_SENDER_SMTP_USER', 'EMAIL_SENDER_SMTP_PASSWORD', 'EMAIL_SENDER_SMTP_HOST', 'EMAIL_SENDER_SMTP_PORT', 'EMAIL_SENDER_SMTP_SECURE'
+    'EMAIL_SENDER_SMTP_USER', 'EMAIL_SENDER_SMTP_PASSWORD', 'EMAIL_SENDER_SMTP_HOST', 'EMAIL_SENDER_SMTP_PORT', 'EMAIL_SENDER_SMTP_SECURE',
+    'GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET', 'GOOGLE_CALLBACK_URI', 'FRONTEND_URL'
     ];
     requiredVars.forEach((varName) => {
         if (!process.env[varName]) {
@@ -52,6 +57,10 @@ const loadenv = (): EnvConfig => {
         EMAIL_SENDER_SMTP_HOST: process.env.EMAIL_SENDER_SMTP_HOST as string,
         EMAIL_SENDER_SMTP_PORT: process.env.EMAIL_SENDER_SMTP_PORT ? parseInt(process.env.EMAIL_SENDER_SMTP_PORT) : 465,
         EMAIL_SENDER_SMTP_SECURE: process.env.EMAIL_SENDER_SMTP_SECURE === 'true',
+        GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID as string,
+        GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET as string,
+        GOOGLE_CALLBACK_URI: process.env.GOOGLE_CALLBACK_URI as string,
+        FRONTEND_URL: process.env.FRONTEND_URL as string,
     }
 }
 export const envVars = loadenv();

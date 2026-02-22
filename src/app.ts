@@ -6,8 +6,15 @@ import { globalErrorHandler } from "./app/middleware/globalwareErrorHandler";
 import { notfundFunction } from "./app/middleware/notfundfunction";
 import userRouter from "./app/module/user/user.router";
 import cookieParser from "cookie-parser";
-const app:Application = express();
 
+import { toNodeHandler } from "better-auth/node";
+import { auth } from "./app/lib/auth";
+import path from "path";
+
+const app:Application = express();
+app.set("view engine", "ejs");
+app.set("views",path.resolve(process.cwd(),`src/app/temPlete`));
+app.use("/api/auth", toNodeHandler(auth))
 //enable url enacoded form data parsing
 app.use(express.urlencoded({ extended: true }));
 

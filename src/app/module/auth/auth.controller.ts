@@ -6,6 +6,9 @@ import { Request, Response } from "express";
 import { tokenUtilits } from "../../ulitis/token";
 import { IchangePassword } from "./auth.interface";
 import { cookieUtils } from "../../ulitis/cookies";
+import { envVars } from "../../config/env";
+
+import { auth } from "../../lib/auth";
 
 
 
@@ -196,6 +199,70 @@ const verifyEmail = catchAsync( async(req: Request ,res: Response) => {
         data: result
     })
 })
+const forgetPassword = catchAsync( async(req: Request ,res: Response) => {
+    const { email } = req.body || {};
+    const result = await authService.forgetPassword(email);
+    sendResponse(res,{
+        httpStatus: status.OK,
+        success: true,
+        message: "If a user with that email exists, a password reset link has been sent",
+        data: result
+    })
+})
+const restPasword = catchAsync( async(req: Request ,res: Response) => {
+    const { email, otp, newPassword } = req.body || {};
+    const result = await authService.restPasword(email, otp, newPassword);
+    sendResponse(res,{
+        httpStatus: status.OK,
+        success: true,
+        message: "Password reset successful",
+        data: result
+    })
+})
+
+// api/vi1/auth/login/google?redirect=/Profile
+const googleLogin = catchAsync( async(req: Request ,res: Response) => {
+    const redirectPath = req.query.redirect as string || "/dashboard";
+    const endocdedRedirectPath = encodeURIComponent(redirectPath);
+    const callbackURL = envVars.GOOGLE_CALLBACK_URI || `${envVars.BETTER_AUTH_URL || "http://localhost:5000"}/api/v1/auth/google/success?redirect=${endocdedRedirectPath}`;
+    res.render("google",{
+        callbackURL,
+        betterAuthURL: envVars.BETTER_AUTH_URL || "http://localhost:5000",
+        betterAuthUrl: envVars.BETTER_AUTH_URL || "http://localhost:5000",
+        
+    })
+    
+})
+const googleLoginsuccess = catchAsync( async(req: Request ,res: Response) => {
+    const redirectPath = req.query.redirect as string || "/dashboard";
+    const sessionToken = req.cookies["better-auth-session_token"];
+    if (!sessionToken) {
+       return res.redirect(`${envVars.FRONTEND_URL}/login?error=oth_failed`)
+    }
+    const session = await auth.api.getSession({
+        headers: {
+            Cookie: `better-auth-session_token=${sessionToken}`,
+          },
+    })
+    if (!session || !session.user) {
+        return res.redirect(`${envVars.FRONTEND_URL}/login?error=no_user_found`)
+    }
+    const result = await authService.googleLoginSuccess(session);
+    const {accessToken, refreshToken} = result;
+    tokenUtilits.setaccesstokencookie(res, accessToken);
+    tokenUtilits.setrefreshtokencookie(res, refreshToken);
+    tokenUtilits.setBetterAuthCookies(res, sessionToken);
+    const isValidRedirect = redirectPath && redirectPath.startsWith("/") && !redirectPath.startsWith("//");
+    const finalRedirect = isValidRedirect ? redirectPath : "/dashboard";
+    res.redirect(`${envVars.FRONTEND_URL}${finalRedirect}`);
+})
+
+const oauthError = catchAsync( async(req: Request ,res: Response) => {
+        const error = req.query.error as string || "unknown_error oth_failed";
+        res.redirect(`${envVars.FRONTEND_URL}/login?error=${error}`)
+
+
+})
 
 export const authController = {
     register,
@@ -204,5 +271,11 @@ export const authController = {
     getnewtoken,
     changePassword,
     logout,
-    verifyEmail
+    verifyEmail,
+    forgetPassword,
+    restPasword,
+    googleLogin,
+    googleLoginsuccess,
+    
+    oauthError
 }

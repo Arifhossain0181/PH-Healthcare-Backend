@@ -10,6 +10,32 @@ import { JwtPayload } from "jsonwebtoken";
 import { IchangePassword } from "./auth.interface";
 
 
+type BetterAuthUser = {
+  id: string;
+  name?: string | null;
+  email?: string | null;
+  role?: string;
+  status?: string;
+  isDeleted?: boolean;
+  emailVerified?: boolean;
+};
+
+type BetterAuthSessionObj = {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  userId: string;
+  expiresAt: Date;
+  token: string;
+  ipAddress?: string | null;
+  userAgent?: string | null;
+};
+
+type BetterAuthSessionResult = {
+  session: BetterAuthSessionObj;
+  user: BetterAuthUser;
+};
+
 interface RegisterPatientPayload {
   name: string;
   email: string;
@@ -243,7 +269,14 @@ const changePassword = async (payload: IchangePassword, sessionToken: string) =>
       Authorization: `Bearer ${sessionToken}`,
     },
   });
+  if (session.user.needPasswordReset) {
+    await prisma.user.update({
+      where: { id: session.user.id },
+      data: { needPasswordReset: false },
+    });
+  }
   
+
   const  accesstoken = tokenUtilits.getAccessTokenFromHeader({
     userId: session.user.id,
     email: result.user.email,
@@ -291,8 +324,105 @@ const verifyEmail = async( email : string ,otp : string) => {
         })
       }
 }
-  
 
+const forgetPassword = async (email: string) => {
+  const isUserExits = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+  });
+  if (!isUserExits) {
+    throw new Error("User with this email does not exist");
+  }
+  if(isUserExits.emailVerified){
+    throw new Error("Email is already verified. Please login or use forgot password option.");
+  }
+  if(isUserExits.isDeleted || isUserExits.status === UserStatus.DELETED){
+    throw new Error("Your account is deleted. Please contact support.");
+  }
+  await auth.api.requestPasswordResetEmailOTP({
+    body: {
+      email,
+    },
+  })
+
+}
+
+const restPasword = async (email: string, otp: string, newPassword: string) => {
+  const isUserExits = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+  });
+  if (!isUserExits) {
+    throw new Error("User with this email does not exist");
+  } 
+  if(!isUserExits.emailVerified){
+    throw new Error("Email is not verified. Please verify your email first.");
+  }
+  if(isUserExits.isDeleted || isUserExits.status === UserStatus.DELETED){
+    throw new Error("Your account is deleted. Please contact support.");
+  }
+  await auth.api.resetPasswordEmailOTP({
+    body: {
+      email,
+      otp,
+      password: newPassword
+    }
+  })
+  if(isUserExits.needPasswordReset){
+    await prisma.user.update({
+      where: { email },
+      data: { needPasswordReset: false },
+    });
+  }
+
+  await prisma.session.deleteMany({
+    where: {
+      userId: isUserExits.id,
+    },
+  })
+
+}
+const googleLoginSuccess = async (session: BetterAuthSessionResult) => {
+  const isPatitentExits = await prisma.patient.findUnique({
+    where: {
+      userId: session.user.id,
+
+    },
+
+  })
+  if(!isPatitentExits){
+     await prisma.patient.create({
+      data: {
+        userId: session.user.id,
+        name: session.user.name || "Patient", 
+        email: session.user.email ?? "" ,
+     }})
+    }
+    const accesstoken = tokenUtilits.getAccessTokenFromHeader({
+      userId: session.user.id,
+      email: session.user.email ?? "",
+      name: session.user.name ?? "",
+      role: String(session.user.role ?? ""),
+      status: String(session.user.status ?? ""),
+      isDeleted: Boolean(session.user.isDeleted),
+      emailVerified: Boolean(session.user.emailVerified),
+    })
+    const refreshToken = tokenUtilits.getRefreshTokenFromHeader({
+      userId: session.user.id,
+      email: session.user.email ?? "",
+      name: session.user.name ?? "",
+      role: String(session.user.role ?? ""),
+      status: String(session.user.status ?? ""),
+      isDeleted: Boolean(session.user.isDeleted),
+      emailVerified: Boolean(session.user.emailVerified),
+    })
+    return {
+      accessToken: accesstoken,
+      refreshToken
+    }
+}
 
 
 
@@ -304,5 +434,8 @@ export const authService = {
   getNewAccessToken,
   changePassword,
   logout ,
-  verifyEmail
+  verifyEmail,
+  forgetPassword,
+  restPasword,
+  googleLoginSuccess
 };
