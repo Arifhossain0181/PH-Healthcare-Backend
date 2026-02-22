@@ -10,10 +10,17 @@ import cookieParser from "cookie-parser";
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./app/lib/auth";
 import path from "path";
-
+import cors from "cors";
+import { envVars } from "./app/config/env";
 const app:Application = express();
 app.set("view engine", "ejs");
 app.set("views",path.resolve(process.cwd(),`src/app/temPlete`));
+
+app.use(cors({
+  origin: [envVars.FRONTEND_URL,envVars.BETTER_AUTH_URL] , // Allow requests from this origin
+  credentials: true, // Allow cookies to be sent with requests
+  allowedHeaders: ["Content-Type", "Authorization"], // Allow these headers
+}))
 app.use("/api/auth", toNodeHandler(auth))
 //enable url enacoded form data parsing
 app.use(express.urlencoded({ extended: true }));

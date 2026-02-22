@@ -8,20 +8,24 @@ import { emailOTP } from "better-auth/plugins/email-otp";
 import { sendEmail } from "../ulitis/email";
 import { envVars } from "../config/env";
 
-
+// Determine whether cookies must be secure (for production / HTTPS)
+const isSecureCookie = (envVars.BETTER_AUTH_URL || "").startsWith("https") || envVars.NODE_ENV === "production";
+const cookieSameSite = isSecureCookie ? "none" as const : "lax" as const;
 
 export const auth = betterAuth({
   baseURL: envVars.BETTER_AUTH_URL || "http://localhost:5000",
-    secret: envVars.BETTER_AUTH_SECRET ,
+  secret: envVars.BETTER_AUTH_SECRET,
   database: prismaAdapter(prisma, {
-    provider: "postgresql", // or "mysql", "postgresql", ...etc
+    provider: "postgresql",
   }),
+
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
   },
-  socialProviders:{
-    google:{
+
+  socialProviders: {
+    google: {
       clientId: envVars.GOOGLE_CLIENT_ID || "",
       clientSecret: envVars.GOOGLE_CLIENT_SECRET || "",
       enabled: true,
@@ -36,118 +40,108 @@ export const auth = betterAuth({
           needPasswordReset: false,
           deleteAt: null,
         };
-      }
-      
+      },
     },
-    
   },
-  emailVerification:{
-    sendOnSignIn:true,
-    sendOnSignUp:true,
-    autoSignInAfterVerification:true,
+
+  emailVerification: {
+    sendOnSignIn: true,
+    sendOnSignUp: true,
+    autoSignInAfterVerification: true,
   },
-  user:{
-    additionalFields:{
-      role:{
-        type:"string",
-        defaultValue:Role.PATIENT,
-        required:true
-        
+
+  user: {
+    additionalFields: {
+      role: {
+        type: "string",
+        defaultValue: Role.PATIENT,
+        required: true,
       },
-      status:{
-        type:"string",
-        defaultValue:UserStatus.ACTIVE,
-        required:true,
+      status: {
+        type: "string",
+        defaultValue: UserStatus.ACTIVE,
+        required: true,
       },
-      needPasswordReset:{
-        type:"boolean",
-        defaultValue:false,
-        required:true,
+      needPasswordReset: {
+        type: "boolean",
+        defaultValue: false,
+        required: true,
       },
-      isDeleted:{ 
-        type:"boolean",
-        defaultValue:false,
-        required:true,
-      }
-    }
+      isDeleted: {
+        type: "boolean",
+        defaultValue: false,
+        required: true,
+      },
+    },
   },
+
   plugins: [
     bearer(),
     emailOTP({
-      overrideDefaultEmailVerification:true,
-      async sendVerificationOTP({email ,otp,type}) {
-        if(type === "email-verification"){
+      overrideDefaultEmailVerification: true,
+      async sendVerificationOTP({ email, otp, type }) {
+        if (type === "email-verification") {
           const user = await prisma.user.findUnique({ where: { email } });
-          if(user && !user.emailVerified){
+          if (user && !user.emailVerified) {
             sendEmail({
               to: email,
               subject: "Verify your email",
               html: `<p>Your verification code is: <strong>${otp}</strong></p>`,
               templateName: "OPT",
-              templateData:{
-                name: user.name || "User",
-                otp
-              }
-            })
+              templateData: { name: user.name || "User", otp },
+            });
           }
-      }
-      else if(type === "forget-password"){
-        const user = await prisma.user.findUnique({ where: { email } });
-        if(user){
-          sendEmail({
-            to: email,
-            subject: "Reset your password",
-            html: `<p>Your password reset code is: <strong>${otp}</strong></p>`,
-            templateName: "RESET_PASSWORD",
-            templateData:{
-              name: user.name || "User",
-              otp
-            }
-          })
+        } else if (type === "forget-password") {
+          const user = await prisma.user.findUnique({ where: { email } });
+          if (user) {
+            sendEmail({
+              to: email,
+              subject: "Reset your password",
+              html: `<p>Your password reset code is: <strong>${otp}</strong></p>`,
+              templateName: "RESET_PASSWORD",
+              templateData: { name: user.name || "User", otp },
+            });
+          }
         }
-      }
-          
- } ,
- expiresIn: 2 * 60, // 
- otpLength: 6, // 6 digits
-
-})
-
-  ],
-  session:{
-    expiresIn: 7 * 24 * 60 * 60, // 7 days in seconds
-    updateAge: 24 * 60 * 60, // 1 day in seconds  
-    cookieCache: {
-      enabled: false, // Disable to avoid maxAge issues
-    }
-  },
-  redirectURLs:{
-    signIn: envVars.GOOGLE_CALLBACK_URI || `${envVars.BETTER_AUTH_URL || "http://localhost:5000"}/api/auth/callback/google`
-
-  },
-
-  
-  trustedOrigins:[ envVars.BETTER_AUTH_URL || "http://localhost:5000"],
-  advanced:{
-    disableCSRFCheck:false,
-    cookies:{
-      state:{
-        attributes:{
-          sameSite:"none",
-          secure:true,
-          httpOnly:true,
-          path:"/",
-        }
-
       },
-      sessionToken:{
-        attributes:{
-          sameSite:"none",
-          secure:true,
-          httpOnly:true,
-          path:"/", 
-      }
-     
-    }
-  }}
+      expiresIn: 2 * 60,
+      otpLength: 6,
+    }),
+  ],
+
+  session: {
+    expiresIn: 7 * 24 * 60 * 60, // 7 days
+    updateAge: 24 * 60 * 60,
+    cookieCache: {
+      enabled: false,
+    },
+  },
+
+  redirectURLs: {
+    signIn: envVars.GOOGLE_CALLBACK_URI || `${envVars.BETTER_AUTH_URL || "http://localhost:5000"}/api/v1/auth/google/success`,
+  },
+
+  trustedOrigins: [envVars.BETTER_AUTH_URL || "http://localhost:5000"],
+
+  advanced: {
+    disableCSRFCheck: false,
+    cookies: {
+      state: {
+        attributes: {
+          sameSite: cookieSameSite,
+          secure: isSecureCookie,
+          httpOnly: true,
+          path: "/",
+        },
+      },
+      sessionToken: {
+        attributes: {
+          sameSite: cookieSameSite,
+          secure: isSecureCookie,
+          httpOnly: true,
+          path: "/",
+        },
+      },
+    },
+  },
 });
