@@ -25,6 +25,12 @@ interface EnvConfig {
     GOOGLE_CLIENT_SECRET: string;
     GOOGLE_CALLBACK_URI: string;
     FRONTEND_URL: string;
+    CLOUDINARY:{
+        CLOUDINARY_CLOUD_NAME: string;
+        CLOUDINARY_API_KEY: string;
+        CLOUDINARY_API_SECRET: string;
+    }
+
       
 }
 
@@ -33,7 +39,7 @@ const loadenv = (): EnvConfig => {
     'ACCESS_TOKEN_SECRET', 'REFRESH_TOKEN_SECRET', 'ACCESS_TOKEN_EXPIRES_IN', 'REFRESH_TOKEN_EXPIRES_IN',
     'BETTER_AUTH_SESSION_TOKEN_EXPIRES_IN', 'BETTER_AUTH_SESSION_TOKEN_UPDATE_AGE',
     'EMAIL_SENDER_SMTP_USER', 'EMAIL_SENDER_SMTP_PASSWORD', 'EMAIL_SENDER_SMTP_HOST', 'EMAIL_SENDER_SMTP_PORT', 'EMAIL_SENDER_SMTP_SECURE',
-    'GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET', 'GOOGLE_CALLBACK_URI', 'FRONTEND_URL'
+    'GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET', 'GOOGLE_CALLBACK_URI', 'FRONTEND_URL', 'CLOUDINARY_CLOUD_NAME', 'CLOUDINARY_API_KEY', 'CLOUDINARY_API_SECRET'
     ];
     requiredVars.forEach((varName) => {
         if (!process.env[varName]) {
@@ -61,6 +67,11 @@ const loadenv = (): EnvConfig => {
         GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET as string,
         GOOGLE_CALLBACK_URI: process.env.GOOGLE_CALLBACK_URI as string,
         FRONTEND_URL: process.env.FRONTEND_URL as string,
+        CLOUDINARY: {
+            CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME as string,
+            CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY as string,
+            CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET as string,
+        }
     }
 }
 export const envVars = loadenv();
