@@ -5,6 +5,8 @@ import { envVars } from "../config/env";
 import z from "zod";
 import { error } from "node:console";
 import { handleZodErrors } from "../errorhelPers/handleZoderrors";
+import { deletefilecloudinary } from "../config/cloudinary/cloudinary.config";
+import { de } from "zod/v4/locales";
 
 
 interface TErrorSoucrece{
@@ -13,9 +15,16 @@ interface TErrorSoucrece{
 
 
 }
-export const globalErrorHandler = (err: Error, req: Request, res: Response, _next: NextFunction) => {
+export const globalErrorHandler = async (err: Error, req: Request, res: Response, _next: NextFunction) => {
     if(envVars.NODE_ENV === "development"){
         console.error("Error from global error handler:",err);
+    }
+    if(req.file){
+        await deletefilecloudinary(req.file.path)
+    }
+    if(req.files && Array.isArray(req.files) && req.files.length > 0){
+        const imageUrls = req.files.map((file) => file.path);
+        await Promise.all(imageUrls.map(url => deletefilecloudinary(url)));
     }
     let errorsoucrce: TErrorSoucrece[] = []
    let statusCode: number = status.INTERNAL_SERVER_ERROR;
