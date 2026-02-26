@@ -1,4 +1,4 @@
-import express, { Application,  } from "express";
+import express, { Application } from "express";
 import { Request, Response } from "express";
 import specialityRouter from "./app/module/sPecility/sPecility.router";
 import authRouter from "./app/module/auth/auth.router";
@@ -12,37 +12,37 @@ import { auth } from "./app/lib/auth";
 import path from "path";
 import cors from "cors";
 import { envVars } from "./app/config/env";
-const app:Application = express();
+import qs from "qs";
+const app: Application = express();
+app.set("query parser",(str : string ) => qs.parse(str));
 app.set("view engine", "ejs");
-app.set("views",path.resolve(process.cwd(),`src/app/temPlete`));
+app.set("views", path.resolve(process.cwd(), `src/app/temPlete`));
 
-app.use(cors({
-  origin: [envVars.FRONTEND_URL,envVars.BETTER_AUTH_URL] , // Allow requests from this origin
-  credentials: true, // Allow cookies to be sent with requests
-  allowedHeaders: ["Content-Type", "Authorization"], // Allow these headers
-}))
-app.use("/api/auth", toNodeHandler(auth))
+app.use(
+  cors({
+    origin: [envVars.FRONTEND_URL, envVars.BETTER_AUTH_URL], // Allow requests from this origin
+    credentials: true, // Allow cookies to be sent with requests
+    allowedHeaders: ["Content-Type", "Authorization"], // Allow these headers
+  }),
+);
+app.use("/api/auth", toNodeHandler(auth));
 //enable url enacoded form data parsing
 app.use(express.urlencoded({ extended: true }));
 
 //middleware to parse JSON data
 app.use(express.json());
-app.use(cookieParser())
-app.use(express.urlencoded({extended:true}))
-app.use("/api/v1/auth", authRouter)
+app.use(cookieParser());
+app.use(express.urlencoded({ extended: true }));
+app.use("/api/v1/auth", authRouter);
 
-app.use("/api/v1/speciality", specialityRouter)
+app.use("/api/v1/speciality", specialityRouter);
 //doctor router
-app.use("/api/v1/users", userRouter)
+app.use("/api/v1/users", userRouter);
 
-
-
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello, TypeScript with Express! Arif');
+app.get("/", (req: Request, res: Response) => {
+  res.send("Hello, TypeScript with Express! Arif");
 });
-app.use(globalErrorHandler)
-app.use(notfundFunction)
-
-
+app.use(globalErrorHandler);
+app.use(notfundFunction);
 
 export default app;

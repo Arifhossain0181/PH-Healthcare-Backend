@@ -3,15 +3,19 @@ import { Request, Response } from "express";
 import { DoctorService } from "./doctor.service";
 import sendResponse from "../../shared/sendResPonse";
 import status from "http-status";
+import { iQueryParams } from "../../interface/Query.interface";
 
 const getAllDoctors = catchAsync(
     async(req: Request, res: Response) => {
-        const result = await DoctorService.getAlldocors();
+        const query = req.query;
+        
+        const result = await DoctorService.getAlldocors( query as iQueryParams);
         sendResponse(res, {
             httpStatus: status.OK,
             success: true,
             message: "Doctors retrieved successfully",
-            data: result
+            data: result.data,
+            meta: result.meta
         });
     }
 );

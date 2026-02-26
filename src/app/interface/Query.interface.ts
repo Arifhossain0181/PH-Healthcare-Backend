@@ -24,10 +24,9 @@ export interface PrismaCountArgs{
     [key: string]: unknown
 }
 
-export interface PrismaModeDelegate{
-    findMany(args?: PrismaFindManyArgs): Promise<Record<string, unknown>[]>;
-    count(args?: PrismaCountArgs): Promise<number>;
-   
+export interface PrismaModeDelegate<T = Record<string, unknown>>{
+    findMany(args?: unknown): Promise<T[]>;
+    count(args?: unknown): Promise<number>;
 }
 export interface iQueryParams{
     serachterm?: string;
@@ -73,4 +72,15 @@ export interface PrismeNumberFilter{
     gt?: number;
     lt?: number;
     not?: number | Record<string, unknown>;
+}
+
+export interface IQueryResult<T> {
+    data: T[];
+    meta:{
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+
+    }
 }
