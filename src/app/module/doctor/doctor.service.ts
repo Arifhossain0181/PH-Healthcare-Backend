@@ -4,14 +4,19 @@ import { Gender } from "../../../../prisma/generated/prisma";
 
  
 const getAlldocors = async () => {
+  // doctors?sPecialty=cardiology&include=doctorschedules.aPPOINTMENTs
     const doctors = await prisma.doctor.findMany({
+      where: { isDeleted: false ,
+          
+      },
         include: {
             user: true,
             specialties: {
                 include: {
                     specialty: true
                 }
-            }
+            },
+              
         }
     })
     return doctors;

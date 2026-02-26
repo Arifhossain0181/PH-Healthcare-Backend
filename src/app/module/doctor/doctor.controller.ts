@@ -1,6 +1,6 @@
 import catchAsync from "../../shared/catchAsync";
 import { Request, Response } from "express";
-import { DoctorService } from "./doctor.server";
+import { DoctorService } from "./doctor.service";
 import sendResponse from "../../shared/sendResPonse";
 import status from "http-status";
 
