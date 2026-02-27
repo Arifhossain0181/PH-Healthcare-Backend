@@ -115,8 +115,9 @@ model Doctor {
   updatedAt            DateTime  @updatedAt
 
   // Relations
-  userId          String            @unique
-  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
   doctorSchedules DoctorSchedules[]
   specialties     DoctorSpecialty[]
   appointments    Appointment[]
@@ -304,11 +305,11 @@ model Review {
 }
 
 model Schedule {
-  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  startDate DateTime
-  endDate   DateTime
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  startDateTime DateTime
+  endDateTime   DateTime
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   // Relations
   doctorSchedules DoctorSchedules[]
