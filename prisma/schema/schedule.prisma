@@ -9,6 +9,7 @@ model Schedule {
 
   // Relations
   doctorSchedules DoctorSchedules[]
+  appointments    Appointment[]
  
   
 

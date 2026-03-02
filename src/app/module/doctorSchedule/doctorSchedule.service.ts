@@ -2,7 +2,7 @@ import { DoctorSchedules, Prisma } from "../../../../prisma/generated/prisma";
 import { IRequest } from "../../interface/request.interface";
 import { prisma } from "../../lib/prisma";
 import { QueryBuilder } from "../../ulitis/QueryBuilder";
-import { doctorIncludeConfig, doctorSearchableFields } from "../doctor/doctor.const";
+import { doctorIncludeConfig,} from "../doctor/doctor.const";
 import { IQueryParams } from "../schedule/schedule.interface";
 import { doctorScheduleFilterableFields, doctorScheduleSearchableFields } from "./doctor.constant";
 import { IDoctorschedule, IUPDateoctorschedule } from "./doctorschedule.interface";
@@ -40,7 +40,7 @@ const getMyAllSchedules = async (query: IQueryParams ,user: IRequest) => {
         params,
         {
             filterableFields: doctorScheduleFilterableFields,
-            searchableFields: doctorSearchableFields,
+            searchableFields: doctorScheduleSearchableFields,
         }
     );
 
@@ -52,6 +52,7 @@ const getMyAllSchedules = async (query: IQueryParams ,user: IRequest) => {
         .sort()
         .fields()
         .dynamicInclude(doctorIncludeConfig)
+        .where({ doctorId: doctordata.id } as Prisma.DoctorSchedulesWhereInput)
         .exec();
 return doctorschedules;
 }
@@ -72,12 +73,12 @@ const querybuilder = new QueryBuilder<DoctorSchedules, Prisma.DoctorSchedulesWhe
     .exec();
     return schedules;
 }
-const getdoctorScheduleById = async(id : string) => {
+const getdoctorScheduleById = async(id : string ,scheduleId:string) => {
     const doctorschedule = await prisma.doctorSchedules.findUnique({
         where:{
             doctorId_scheduleId : {
                 doctorId : id,
-                scheduleId : id
+                scheduleId : scheduleId
             }
         },
         include:{

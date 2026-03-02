@@ -36,8 +36,10 @@ const getAllSchedules = catchAsync(async (req: Request, res:Response) => {
     })
 })
 const getdoctorScheduleById = catchAsync(async (req: Request, res:Response) => {
-    const {id} = req.params
-    const result = await doctorScheduleService.getdoctorScheduleById(id as string);
+    const doctorId = req.params.doctorId
+    const scheduleId = req.params.scheduleId
+
+     const result = await doctorScheduleService.getdoctorScheduleById(doctorId as string, scheduleId as string);
     return res.status(200).json({
         message : "Doctor schedule retrieved successfully",
         data : result,
