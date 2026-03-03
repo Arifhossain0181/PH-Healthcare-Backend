@@ -41,10 +41,19 @@ const initiatePayment = catchAsync(async (req: Request, res: Response) => {
   res.status(200).json({ success: true, message: "Payment initiated successfully", data: paymentInfo });
 });
 
+const changeAppointmentStatus = catchAsync(async (req: Request, res: Response) => {
+  const appointmentId = req.params.id;
+  const { status } = req.body;
+  const user = req.user;
+  const updated = await AppointmentService.changeAppointmentStatus(appointmentId as string, status, user);
+  res.status(200).json({ success: true, message: "Appointment status updated successfully", data: updated });
+});
+
 export const AppointmentController = {
   bookAppointment,
   getMyAppointments,
   getMySingleAppointment,
+  changeAppointmentStatus,
   getAllAppointments,
   bookAppointmentWithPayLater,
   initiatePayment,

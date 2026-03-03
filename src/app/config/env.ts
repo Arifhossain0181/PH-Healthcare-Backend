@@ -29,7 +29,13 @@ interface EnvConfig {
         CLOUDINARY_CLOUD_NAME: string;
         CLOUDINARY_API_KEY: string;
         CLOUDINARY_API_SECRET: string;
-    }
+    },
+    STRIPE:{
+        STRIPE_SECRET_KEY: string;
+        STRIPE_WEBHOOK_SECRET: string;
+    },
+    SUPER_ADMIN: string;
+    SUPER_ADMIN_PASSWORD: string;
 
       
 }
@@ -39,7 +45,7 @@ const loadenv = (): EnvConfig => {
     'ACCESS_TOKEN_SECRET', 'REFRESH_TOKEN_SECRET', 'ACCESS_TOKEN_EXPIRES_IN', 'REFRESH_TOKEN_EXPIRES_IN',
     'BETTER_AUTH_SESSION_TOKEN_EXPIRES_IN', 'BETTER_AUTH_SESSION_TOKEN_UPDATE_AGE',
     'EMAIL_SENDER_SMTP_USER', 'EMAIL_SENDER_SMTP_PASSWORD', 'EMAIL_SENDER_SMTP_HOST', 'EMAIL_SENDER_SMTP_PORT', 'EMAIL_SENDER_SMTP_SECURE',
-    'GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET', 'GOOGLE_CALLBACK_URI', 'FRONTEND_URL', 'CLOUDINARY_CLOUD_NAME', 'CLOUDINARY_API_KEY', 'CLOUDINARY_API_SECRET'
+    'GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET', 'GOOGLE_CALLBACK_URI', 'FRONTEND_URL', 'CLOUDINARY_CLOUD_NAME', 'CLOUDINARY_API_KEY', 'CLOUDINARY_API_SECRET',"STRIPE_SECRET_KEY", "STRIPE_WEBHOOK_SECRET", "SUPER_ADMIN", "SUPER_ADMIN_PASSWORD"
     ];
     requiredVars.forEach((varName) => {
         if (!process.env[varName]) {
@@ -71,7 +77,13 @@ const loadenv = (): EnvConfig => {
             CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME as string,
             CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY as string,
             CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET as string,
-        }
+        },
+        STRIPE: {
+            STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY as string,
+            STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET as string,
+        },
+        SUPER_ADMIN: process.env.SUPER_ADMIN as string,
+        SUPER_ADMIN_PASSWORD: process.env.SUPER_ADMIN_PASSWORD as string,
     }
 }
 export const envVars = loadenv();

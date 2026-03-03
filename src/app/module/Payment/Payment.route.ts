@@ -1,8 +1,7 @@
 import { Router } from "express";
-import { Role } from "../../../../prisma/generated/prisma";
+import { AppointmentController } from "../appointment/appointment.controller";
+import { Role } from "@prisma/client";
 import { checkAuth } from "../../middleware/checkauth";
-import { AppointmentController } from "./appointment.controller";
-
 const router = Router();
 
 router.post("/book-appointment", checkAuth([Role.PATIENT]), AppointmentController.bookAppointment);

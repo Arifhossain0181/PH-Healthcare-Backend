@@ -13,10 +13,21 @@ import path from "path";
 import cors from "cors";
 import { envVars } from "./app/config/env";
 import qs from "qs";
+import cron from "node-cron";
+import { AppointmentService } from "./app/module/appointment/appointment.service";
+
 const app: Application = express();
 app.set("query parser",(str : string ) => qs.parse(str));
 app.set("view engine", "ejs");
 app.set("views", path.resolve(process.cwd(), `src/app/temPlete`));
+
+app.post("/webhook",express.raw({type: "application/json"}), (req: Request, res: Response) => {
+    console.log("Webhook received:", req.body);
+    res.status(200).json({ received: true });
+})
+
+
+
 
 app.use(
   cors({
@@ -33,6 +44,18 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
+
+cron.schedule("*/2 * * * *",async () => {
+  try{
+       console.log("Running cron job to cancel unPaid aPPointment")
+       await AppointmentService.cancelAppointmentUnPaid()
+  }
+  catch(error){
+    console.error("Error running cron job:", error);
+  }
+
+})
+
 app.use("/api/v1/auth", authRouter);
 
 app.use("/api/v1/speciality", specialityRouter);
