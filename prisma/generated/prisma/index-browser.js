@@ -224,7 +224,9 @@ exports.Prisma.MedicalReportScalarFieldEnum = {
   treatment: 'treatment',
   followUpDate: 'followUpDate',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  reportName: 'reportName',
+  reportLink: 'reportLink'
 };
 
 exports.Prisma.PatientHealthDataScalarFieldEnum = {

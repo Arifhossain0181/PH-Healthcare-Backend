@@ -206,21 +206,23 @@ enum MaritalStatus {
 }
 
 model MedicalReport {
-  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  patientId     String    @db.Uuid
-  doctorId      String    @db.Uuid
-  appointmentId String    @unique @db.Uuid
+  id            String      @id @default(uuid()) @db.Uuid
+  patientId     String      @db.Uuid
+  doctorId      String      @db.Uuid
+  appointmentId String      @unique @db.Uuid
   diagnosis     String
   treatment     String
   followUpDate  DateTime?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  reportName    String
+  reportLink    String
   // Relations
-  patient     Patient     @relation(fields: [patientId], references: [id])
-  doctor      Doctor      @relation(fields: [doctorId], references: [id])
-  appointment Appointment @relation(fields: [appointmentId], references: [id])
+  patient       Patient     @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  doctor        Doctor      @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  appointment   Appointment @relation(fields: [appointmentId], references: [id])
 
+  @@index([patientId])
   @@map("medical_reports")
 }
 
@@ -256,16 +258,16 @@ model PatientHealthData {
 }
 
 model Payment {
-  id                 String        @id @default(uuid(7))
+  id                 String        @id @default(uuid()) @db.Uuid
   amount             Float
-  transactionId      String        @unique @db.Uuid()
+  transactionId      String        @unique @db.Uuid
   stripeEventId      String?       @unique
   status             PaymentStatus @default(UNPAID)
   paymentGatewayData Json?
   createdAt          DateTime      @default(now())
   updatedAt          DateTime      @updatedAt
 
-  appointmentId String      @unique
+  appointmentId String      @unique @db.Uuid
   appointment   Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
 
   @@index([appointmentId])

@@ -1,4 +1,4 @@
-import { uuidv7 } from "zod";
+import {v7 as uuidv7} from "uuid";
 import { IRequest } from "../../interface/request.interface";
 import { prisma } from "../../lib/prisma";
 import { IBookAppointment } from "./appointment.interface";
@@ -359,11 +359,11 @@ const initiatePayment = async (appointmentId: string, user: IRequest) => {
       appointmentId: appointmentData.id,
       paymentId: appointmentData.payment.id,
     },
-    success_url: `${envVars.FRONTEND_URL}/dashboard/payment/payment-success`,
-    cancel_url: `${envVars.FRONTEND_URL}/dashboard/payment/payment-failed`,
+    success_url: `${envVars.FRONTEND_URL}/dashboard/payment/payment-success?appointmentId=${appointmentData.id}&paymentId=${appointmentData.payment.id}`,
+    cancel_url: `${envVars.FRONTEND_URL}/dashboard/appointment?error=payment_cancelled`,
   });
   return {
-    Paymentuel: session.url,
+    Paymenturl: session.url,
   };
 };
 

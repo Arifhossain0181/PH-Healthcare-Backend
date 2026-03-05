@@ -10908,6 +10908,8 @@ export namespace Prisma {
     followUpDate: Date | null
     createdAt: Date | null
     updatedAt: Date | null
+    reportName: string | null
+    reportLink: string | null
   }
 
   export type MedicalReportMaxAggregateOutputType = {
@@ -10920,6 +10922,8 @@ export namespace Prisma {
     followUpDate: Date | null
     createdAt: Date | null
     updatedAt: Date | null
+    reportName: string | null
+    reportLink: string | null
   }
 
   export type MedicalReportCountAggregateOutputType = {
@@ -10932,6 +10936,8 @@ export namespace Prisma {
     followUpDate: number
     createdAt: number
     updatedAt: number
+    reportName: number
+    reportLink: number
     _all: number
   }
 
@@ -10946,6 +10952,8 @@ export namespace Prisma {
     followUpDate?: true
     createdAt?: true
     updatedAt?: true
+    reportName?: true
+    reportLink?: true
   }
 
   export type MedicalReportMaxAggregateInputType = {
@@ -10958,6 +10966,8 @@ export namespace Prisma {
     followUpDate?: true
     createdAt?: true
     updatedAt?: true
+    reportName?: true
+    reportLink?: true
   }
 
   export type MedicalReportCountAggregateInputType = {
@@ -10970,6 +10980,8 @@ export namespace Prisma {
     followUpDate?: true
     createdAt?: true
     updatedAt?: true
+    reportName?: true
+    reportLink?: true
     _all?: true
   }
 
@@ -11055,6 +11067,8 @@ export namespace Prisma {
     followUpDate: Date | null
     createdAt: Date
     updatedAt: Date
+    reportName: string
+    reportLink: string
     _count: MedicalReportCountAggregateOutputType | null
     _min: MedicalReportMinAggregateOutputType | null
     _max: MedicalReportMaxAggregateOutputType | null
@@ -11084,6 +11098,8 @@ export namespace Prisma {
     followUpDate?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    reportName?: boolean
+    reportLink?: boolean
     patient?: boolean | PatientDefaultArgs<ExtArgs>
     doctor?: boolean | DoctorDefaultArgs<ExtArgs>
     appointment?: boolean | AppointmentDefaultArgs<ExtArgs>
@@ -11099,6 +11115,8 @@ export namespace Prisma {
     followUpDate?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    reportName?: boolean
+    reportLink?: boolean
     patient?: boolean | PatientDefaultArgs<ExtArgs>
     doctor?: boolean | DoctorDefaultArgs<ExtArgs>
     appointment?: boolean | AppointmentDefaultArgs<ExtArgs>
@@ -11114,6 +11132,8 @@ export namespace Prisma {
     followUpDate?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    reportName?: boolean
+    reportLink?: boolean
     patient?: boolean | PatientDefaultArgs<ExtArgs>
     doctor?: boolean | DoctorDefaultArgs<ExtArgs>
     appointment?: boolean | AppointmentDefaultArgs<ExtArgs>
@@ -11129,9 +11149,11 @@ export namespace Prisma {
     followUpDate?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    reportName?: boolean
+    reportLink?: boolean
   }
 
-  export type MedicalReportOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "patientId" | "doctorId" | "appointmentId" | "diagnosis" | "treatment" | "followUpDate" | "createdAt" | "updatedAt", ExtArgs["result"]["medicalReport"]>
+  export type MedicalReportOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "patientId" | "doctorId" | "appointmentId" | "diagnosis" | "treatment" | "followUpDate" | "createdAt" | "updatedAt" | "reportName" | "reportLink", ExtArgs["result"]["medicalReport"]>
   export type MedicalReportInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     patient?: boolean | PatientDefaultArgs<ExtArgs>
     doctor?: boolean | DoctorDefaultArgs<ExtArgs>
@@ -11165,6 +11187,8 @@ export namespace Prisma {
       followUpDate: Date | null
       createdAt: Date
       updatedAt: Date
+      reportName: string
+      reportLink: string
     }, ExtArgs["result"]["medicalReport"]>
     composites: {}
   }
@@ -11600,6 +11624,8 @@ export namespace Prisma {
     readonly followUpDate: FieldRef<"MedicalReport", 'DateTime'>
     readonly createdAt: FieldRef<"MedicalReport", 'DateTime'>
     readonly updatedAt: FieldRef<"MedicalReport", 'DateTime'>
+    readonly reportName: FieldRef<"MedicalReport", 'String'>
+    readonly reportLink: FieldRef<"MedicalReport", 'String'>
   }
     
 
@@ -21404,7 +21430,9 @@ export namespace Prisma {
     treatment: 'treatment',
     followUpDate: 'followUpDate',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    reportName: 'reportName',
+    reportLink: 'reportLink'
   };
 
   export type MedicalReportScalarFieldEnum = (typeof MedicalReportScalarFieldEnum)[keyof typeof MedicalReportScalarFieldEnum]
@@ -22407,6 +22435,8 @@ export namespace Prisma {
     followUpDate?: DateTimeNullableFilter<"MedicalReport"> | Date | string | null
     createdAt?: DateTimeFilter<"MedicalReport"> | Date | string
     updatedAt?: DateTimeFilter<"MedicalReport"> | Date | string
+    reportName?: StringFilter<"MedicalReport"> | string
+    reportLink?: StringFilter<"MedicalReport"> | string
     patient?: XOR<PatientScalarRelationFilter, PatientWhereInput>
     doctor?: XOR<DoctorScalarRelationFilter, DoctorWhereInput>
     appointment?: XOR<AppointmentScalarRelationFilter, AppointmentWhereInput>
@@ -22422,6 +22452,8 @@ export namespace Prisma {
     followUpDate?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    reportName?: SortOrder
+    reportLink?: SortOrder
     patient?: PatientOrderByWithRelationInput
     doctor?: DoctorOrderByWithRelationInput
     appointment?: AppointmentOrderByWithRelationInput
@@ -22440,6 +22472,8 @@ export namespace Prisma {
     followUpDate?: DateTimeNullableFilter<"MedicalReport"> | Date | string | null
     createdAt?: DateTimeFilter<"MedicalReport"> | Date | string
     updatedAt?: DateTimeFilter<"MedicalReport"> | Date | string
+    reportName?: StringFilter<"MedicalReport"> | string
+    reportLink?: StringFilter<"MedicalReport"> | string
     patient?: XOR<PatientScalarRelationFilter, PatientWhereInput>
     doctor?: XOR<DoctorScalarRelationFilter, DoctorWhereInput>
     appointment?: XOR<AppointmentScalarRelationFilter, AppointmentWhereInput>
@@ -22455,6 +22489,8 @@ export namespace Prisma {
     followUpDate?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    reportName?: SortOrder
+    reportLink?: SortOrder
     _count?: MedicalReportCountOrderByAggregateInput
     _max?: MedicalReportMaxOrderByAggregateInput
     _min?: MedicalReportMinOrderByAggregateInput
@@ -22473,6 +22509,8 @@ export namespace Prisma {
     followUpDate?: DateTimeNullableWithAggregatesFilter<"MedicalReport"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"MedicalReport"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"MedicalReport"> | Date | string
+    reportName?: StringWithAggregatesFilter<"MedicalReport"> | string
+    reportLink?: StringWithAggregatesFilter<"MedicalReport"> | string
   }
 
   export type PatientHealthDataWhereInput = {
@@ -22609,7 +22647,7 @@ export namespace Prisma {
     AND?: PaymentWhereInput | PaymentWhereInput[]
     OR?: PaymentWhereInput[]
     NOT?: PaymentWhereInput | PaymentWhereInput[]
-    id?: StringFilter<"Payment"> | string
+    id?: UuidFilter<"Payment"> | string
     amount?: FloatFilter<"Payment"> | number
     transactionId?: UuidFilter<"Payment"> | string
     stripeEventId?: StringNullableFilter<"Payment"> | string | null
@@ -22617,7 +22655,7 @@ export namespace Prisma {
     paymentGatewayData?: JsonNullableFilter<"Payment">
     createdAt?: DateTimeFilter<"Payment"> | Date | string
     updatedAt?: DateTimeFilter<"Payment"> | Date | string
-    appointmentId?: StringFilter<"Payment"> | string
+    appointmentId?: UuidFilter<"Payment"> | string
     appointment?: XOR<AppointmentScalarRelationFilter, AppointmentWhereInput>
   }
 
@@ -22671,7 +22709,7 @@ export namespace Prisma {
     AND?: PaymentScalarWhereWithAggregatesInput | PaymentScalarWhereWithAggregatesInput[]
     OR?: PaymentScalarWhereWithAggregatesInput[]
     NOT?: PaymentScalarWhereWithAggregatesInput | PaymentScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"Payment"> | string
+    id?: UuidWithAggregatesFilter<"Payment"> | string
     amount?: FloatWithAggregatesFilter<"Payment"> | number
     transactionId?: UuidWithAggregatesFilter<"Payment"> | string
     stripeEventId?: StringNullableWithAggregatesFilter<"Payment"> | string | null
@@ -22679,7 +22717,7 @@ export namespace Prisma {
     paymentGatewayData?: JsonNullableWithAggregatesFilter<"Payment">
     createdAt?: DateTimeWithAggregatesFilter<"Payment"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Payment"> | Date | string
-    appointmentId?: StringWithAggregatesFilter<"Payment"> | string
+    appointmentId?: UuidWithAggregatesFilter<"Payment"> | string
   }
 
   export type PrescriptionWhereInput = {
@@ -23866,6 +23904,8 @@ export namespace Prisma {
     followUpDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    reportName: string
+    reportLink: string
     patient: PatientCreateNestedOneWithoutMedicalReportsInput
     doctor: DoctorCreateNestedOneWithoutMedicalReportsInput
     appointment: AppointmentCreateNestedOneWithoutMedicalReportInput
@@ -23881,6 +23921,8 @@ export namespace Prisma {
     followUpDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    reportName: string
+    reportLink: string
   }
 
   export type MedicalReportUpdateInput = {
@@ -23890,6 +23932,8 @@ export namespace Prisma {
     followUpDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reportName?: StringFieldUpdateOperationsInput | string
+    reportLink?: StringFieldUpdateOperationsInput | string
     patient?: PatientUpdateOneRequiredWithoutMedicalReportsNestedInput
     doctor?: DoctorUpdateOneRequiredWithoutMedicalReportsNestedInput
     appointment?: AppointmentUpdateOneRequiredWithoutMedicalReportNestedInput
@@ -23905,6 +23949,8 @@ export namespace Prisma {
     followUpDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reportName?: StringFieldUpdateOperationsInput | string
+    reportLink?: StringFieldUpdateOperationsInput | string
   }
 
   export type MedicalReportCreateManyInput = {
@@ -23917,6 +23963,8 @@ export namespace Prisma {
     followUpDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    reportName: string
+    reportLink: string
   }
 
   export type MedicalReportUpdateManyMutationInput = {
@@ -23926,6 +23974,8 @@ export namespace Prisma {
     followUpDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reportName?: StringFieldUpdateOperationsInput | string
+    reportLink?: StringFieldUpdateOperationsInput | string
   }
 
   export type MedicalReportUncheckedUpdateManyInput = {
@@ -23938,6 +23988,8 @@ export namespace Prisma {
     followUpDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reportName?: StringFieldUpdateOperationsInput | string
+    reportLink?: StringFieldUpdateOperationsInput | string
   }
 
   export type PatientHealthDataCreateInput = {
@@ -25459,6 +25511,8 @@ export namespace Prisma {
     followUpDate?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    reportName?: SortOrder
+    reportLink?: SortOrder
   }
 
   export type MedicalReportMaxOrderByAggregateInput = {
@@ -25471,6 +25525,8 @@ export namespace Prisma {
     followUpDate?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    reportName?: SortOrder
+    reportLink?: SortOrder
   }
 
   export type MedicalReportMinOrderByAggregateInput = {
@@ -25483,6 +25539,8 @@ export namespace Prisma {
     followUpDate?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    reportName?: SortOrder
+    reportLink?: SortOrder
   }
 
   export type EnumBloodGroupFilter<$PrismaModel = never> = {
@@ -27861,6 +27919,8 @@ export namespace Prisma {
     followUpDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    reportName: string
+    reportLink: string
     patient: PatientCreateNestedOneWithoutMedicalReportsInput
     doctor: DoctorCreateNestedOneWithoutMedicalReportsInput
   }
@@ -27874,6 +27934,8 @@ export namespace Prisma {
     followUpDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    reportName: string
+    reportLink: string
   }
 
   export type MedicalReportCreateOrConnectWithoutAppointmentInput = {
@@ -28174,6 +28236,8 @@ export namespace Prisma {
     followUpDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reportName?: StringFieldUpdateOperationsInput | string
+    reportLink?: StringFieldUpdateOperationsInput | string
     patient?: PatientUpdateOneRequiredWithoutMedicalReportsNestedInput
     doctor?: DoctorUpdateOneRequiredWithoutMedicalReportsNestedInput
   }
@@ -28187,6 +28251,8 @@ export namespace Prisma {
     followUpDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reportName?: StringFieldUpdateOperationsInput | string
+    reportLink?: StringFieldUpdateOperationsInput | string
   }
 
   export type SessionCreateWithoutUserInput = {
@@ -28878,6 +28944,8 @@ export namespace Prisma {
     followUpDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    reportName: string
+    reportLink: string
     patient: PatientCreateNestedOneWithoutMedicalReportsInput
     appointment: AppointmentCreateNestedOneWithoutMedicalReportInput
   }
@@ -28891,6 +28959,8 @@ export namespace Prisma {
     followUpDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    reportName: string
+    reportLink: string
   }
 
   export type MedicalReportCreateOrConnectWithoutDoctorInput = {
@@ -29132,6 +29202,8 @@ export namespace Prisma {
     followUpDate?: DateTimeNullableFilter<"MedicalReport"> | Date | string | null
     createdAt?: DateTimeFilter<"MedicalReport"> | Date | string
     updatedAt?: DateTimeFilter<"MedicalReport"> | Date | string
+    reportName?: StringFilter<"MedicalReport"> | string
+    reportLink?: StringFilter<"MedicalReport"> | string
   }
 
   export type PrescriptionUpsertWithWhereUniqueWithoutDoctorInput = {
@@ -30981,6 +31053,8 @@ export namespace Prisma {
     followUpDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    reportName: string
+    reportLink: string
     doctor: DoctorCreateNestedOneWithoutMedicalReportsInput
     appointment: AppointmentCreateNestedOneWithoutMedicalReportInput
   }
@@ -30994,6 +31068,8 @@ export namespace Prisma {
     followUpDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    reportName: string
+    reportLink: string
   }
 
   export type MedicalReportCreateOrConnectWithoutPatientInput = {
@@ -31354,6 +31430,8 @@ export namespace Prisma {
     followUpDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    reportName: string
+    reportLink: string
   }
 
   export type PrescriptionCreateManyDoctorInput = {
@@ -31498,6 +31576,8 @@ export namespace Prisma {
     followUpDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reportName?: StringFieldUpdateOperationsInput | string
+    reportLink?: StringFieldUpdateOperationsInput | string
     patient?: PatientUpdateOneRequiredWithoutMedicalReportsNestedInput
     appointment?: AppointmentUpdateOneRequiredWithoutMedicalReportNestedInput
   }
@@ -31511,6 +31591,8 @@ export namespace Prisma {
     followUpDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reportName?: StringFieldUpdateOperationsInput | string
+    reportLink?: StringFieldUpdateOperationsInput | string
   }
 
   export type MedicalReportUncheckedUpdateManyWithoutDoctorInput = {
@@ -31522,6 +31604,8 @@ export namespace Prisma {
     followUpDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reportName?: StringFieldUpdateOperationsInput | string
+    reportLink?: StringFieldUpdateOperationsInput | string
   }
 
   export type PrescriptionUpdateWithoutDoctorInput = {
@@ -31715,6 +31799,8 @@ export namespace Prisma {
     followUpDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    reportName: string
+    reportLink: string
   }
 
   export type PrescriptionCreateManyPatientInput = {
@@ -31812,6 +31898,8 @@ export namespace Prisma {
     followUpDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reportName?: StringFieldUpdateOperationsInput | string
+    reportLink?: StringFieldUpdateOperationsInput | string
     doctor?: DoctorUpdateOneRequiredWithoutMedicalReportsNestedInput
     appointment?: AppointmentUpdateOneRequiredWithoutMedicalReportNestedInput
   }
@@ -31825,6 +31913,8 @@ export namespace Prisma {
     followUpDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reportName?: StringFieldUpdateOperationsInput | string
+    reportLink?: StringFieldUpdateOperationsInput | string
   }
 
   export type MedicalReportUncheckedUpdateManyWithoutPatientInput = {
@@ -31836,6 +31926,8 @@ export namespace Prisma {
     followUpDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reportName?: StringFieldUpdateOperationsInput | string
+    reportLink?: StringFieldUpdateOperationsInput | string
   }
 
   export type PrescriptionUpdateWithoutPatientInput = {

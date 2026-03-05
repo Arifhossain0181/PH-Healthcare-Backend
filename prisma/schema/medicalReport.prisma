@@ -1,7 +1,7 @@
 
 
 model MedicalReport {
-  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id            String   @id @default(uuid()) @db.Uuid
   patientId     String   @db.Uuid
   doctorId      String   @db.Uuid
   appointmentId String   @unique @db.Uuid
@@ -10,11 +10,13 @@ model MedicalReport {
   followUpDate  DateTime?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
-
+reportName String
+reportLink String
   // Relations
-  patient     Patient     @relation(fields: [patientId], references: [id])
-  doctor      Doctor      @relation(fields: [doctorId], references: [id])
+  patient     Patient     @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  doctor      Doctor      @relation(fields: [doctorId], references: [id], onDelete: Cascade)
   appointment Appointment @relation(fields: [appointmentId], references: [id])
 
+  @@index([patientId])
   @@map("medical_reports")
 }

@@ -15,6 +15,7 @@ import { envVars } from "./app/config/env";
 import qs from "qs";
 import cron from "node-cron";
 import { AppointmentService } from "./app/module/appointment/appointment.service";
+import { PatientRoute } from "./app/module/Patitent/Patient.route";
 
 const app: Application = express();
 app.set("query parser",(str : string ) => qs.parse(str));
@@ -61,6 +62,10 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/speciality", specialityRouter);
 //doctor router
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/patients", PatientRoute);
+
+
+  
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello, TypeScript with Express! Arif");
