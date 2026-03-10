@@ -7,6 +7,7 @@ import { error } from "node:console";
 import { handleZodErrors } from "../errorhelPers/handleZoderrors";
 import { deletefilecloudinary } from "../config/cloudinary/cloudinary.config";
 import { de } from "zod/v4/locales";
+import { deleteUploadedFileFromGlobalError } from "../ulitis/deleteuPloadedfileFromGlobal.error";
 
 
 interface TErrorSoucrece{
@@ -19,13 +20,14 @@ export const globalErrorHandler = async (err: Error, req: Request, res: Response
     if(envVars.NODE_ENV === "development"){
         console.error("Error from global error handler:",err);
     }
-    if(req.file){
-        await deletefilecloudinary(req.file.path)
-    }
-    if(req.files && Array.isArray(req.files) && req.files.length > 0){
-        const imageUrls = req.files.map((file) => file.path);
-        await Promise.all(imageUrls.map(url => deletefilecloudinary(url)));
-    }
+    // if(req.file){
+    //     await deletefilecloudinary(req.file.path)
+    // }
+    // if(req.files && Array.isArray(req.files) && req.files.length > 0){
+    //     const imageUrls = req.files.map((file) => file.path);
+    //     await Promise.all(imageUrls.map(url => deletefilecloudinary(url)));
+    // }
+    await deleteUploadedFileFromGlobalError(req);
     let errorsoucrce: TErrorSoucrece[] = []
    let statusCode: number = status.INTERNAL_SERVER_ERROR;
 let message: string = "Internal server error";
