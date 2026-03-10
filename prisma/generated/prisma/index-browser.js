@@ -258,6 +258,7 @@ exports.Prisma.PaymentScalarFieldEnum = {
   transactionId: 'transactionId',
   stripeEventId: 'stripeEventId',
   status: 'status',
+  invoiceUrl: 'invoiceUrl',
   paymentGatewayData: 'paymentGatewayData',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
@@ -275,8 +276,11 @@ exports.Prisma.PrescriptionScalarFieldEnum = {
   frequency: 'frequency',
   duration: 'duration',
   instructions: 'instructions',
+  followUpDate: 'followUpDate',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  pdfUrl: 'pdfUrl',
+  paymentGatewayData: 'paymentGatewayData'
 };
 
 exports.Prisma.ReviewScalarFieldEnum = {

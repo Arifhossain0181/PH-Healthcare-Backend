@@ -9,8 +9,13 @@ model Prescription {
   frequency     String
   duration      String
   instructions  String?
+  followUpDate  DateTime?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  pdfUrl        String?
+  paymentGatewayData Json?
+  
+
 
   // Relations
   appointment   Appointment @relation(fields: [appointmentId], references: [id])

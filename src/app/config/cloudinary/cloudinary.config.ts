@@ -24,8 +24,8 @@ catch(error){
     console.error("Error deleting file:", error);
     throw error
 }}
-export const uploadToCloudinary = async (buffer:string ,fileName:string ) : Promise<UploadApiResponse> => {
-    if(!buffer || !fileName){
+export const uploadToCloudinary = async (buffer: Buffer | string, fileName: string): Promise<UploadApiResponse> => {
+    if (!buffer || !fileName) {
         throw new Error("Buffer and fileName are required for uploading to Cloudinary");
     }
     try{
@@ -46,7 +46,7 @@ export const uploadToCloudinary = async (buffer:string ,fileName:string ) : Prom
                 }
                 resolve(result as UploadApiResponse);
             }
-            ).end(buffer);
+            ).end(Buffer.isBuffer(buffer) ? buffer : Buffer.from(buffer as string));
         })
         
 

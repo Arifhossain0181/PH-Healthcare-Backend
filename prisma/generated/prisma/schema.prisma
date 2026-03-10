@@ -263,6 +263,7 @@ model Payment {
   transactionId      String        @unique @db.Uuid
   stripeEventId      String?       @unique
   status             PaymentStatus @default(UNPAID)
+  invoiceUrl         String?
   paymentGatewayData Json?
   createdAt          DateTime      @default(now())
   updatedAt          DateTime      @updatedAt
@@ -276,18 +277,21 @@ model Payment {
 }
 
 model Prescription {
-  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  appointmentId String   @unique @db.Uuid
-  doctorId      String   @db.Uuid
-  patientId     String   @db.Uuid
-  medication    String
-  dosage        String
-  dosageUnit    String
-  frequency     String
-  duration      String
-  instructions  String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id                 String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  appointmentId      String    @unique @db.Uuid
+  doctorId           String    @db.Uuid
+  patientId          String    @db.Uuid
+  medication         String
+  dosage             String
+  dosageUnit         String
+  frequency          String
+  duration           String
+  instructions       String?
+  followUpDate       DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  pdfUrl             String?
+  paymentGatewayData Json?
 
   // Relations
   appointment Appointment @relation(fields: [appointmentId], references: [id])
