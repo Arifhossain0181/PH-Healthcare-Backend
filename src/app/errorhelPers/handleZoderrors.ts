@@ -1,23 +1,20 @@
 import z from "zod";
 import status from "http-status";
-interface TErrorSoucrece{
-    path: string;
-    message: string;
-}
+import { TErrorSources } from "../interface/error.interface";
 
 export const handleZodErrors = (error: z.ZodError) => {
-    const  statusCode = status.BAD_REQUEST;
- const    message = "Validation error Zod validation failed";
-    const errorsoucrce: TErrorSoucrece[] = [];
-    error.issues.forEach((error) => {
-        errorsoucrce.push({
-            path: error.path.join(".") || "unknown",
-            message: error.message
+    const statusCode = status.BAD_REQUEST;
+    const message = "Validation error Zod validation failed";
+    const errorSources: TErrorSources[] = [];
+    error.issues.forEach((issue) => {
+        errorSources.push({
+            path: issue.path.join(".") || "unknown",
+            message: issue.message,
         });
     });
     return {
         statusCode,
         message,
-        errorsoucrce
+        errorSources,
     };
-}
+};
