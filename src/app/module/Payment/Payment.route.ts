@@ -13,3 +13,4 @@ router.post("/book-appointment-with-pay-later", checkAuth([Role.PATIENT]), Appoi
 router.post("/initiate-payment/:id", checkAuth([Role.PATIENT]), AppointmentController.initiatePayment);
 
 export const AppointmentRoutes = router;
+export const PaymentRoutes = router;

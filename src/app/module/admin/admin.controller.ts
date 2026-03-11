@@ -54,4 +54,27 @@ export const adminController = {
       data: result,
     });
   }),
+  changestatus : catchAsync(async (req: Request, res: Response) => {
+    const payload = req.body;
+    const user = req.user;
+    const result = await adminService.changeuserstatus(payload , user);
+    sendResponse(res, {
+      httpStatus: status.OK,
+      success: true,
+      message: "User status changed successfully",
+      data: result,
+    });
+  }),
+  changeRole : catchAsync(async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { role } = req.body;
+    const targetId = Array.isArray(id) ? id[0] : id;
+    const result = await adminService.changeuserRole({ userId: targetId as string, role }, req.user);
+    sendResponse(res, {
+      httpStatus: status.OK,
+      success: true,
+      message: "User role changed successfully",
+      data: result,
+    });
+  }),
 };

@@ -1,4 +1,4 @@
-import { Role, UserStatus } from "../../../../prisma/generated/prisma";
+import { Role, UserStatus} from "../../../../prisma/generated/prisma";
 
 export interface IAdmin {
   id: string;
@@ -26,4 +26,14 @@ export interface IAdminProfile {
   updatedAt: Date;
   isDeleted: boolean;
   deletedAt: Date | null;
+}
+export interface IChnageuserstatus {
+  userId: string;
+  isActive: boolean;
+  userStatus: UserStatus;
+}
+export interface IChangeUserRole {
+  userId: string;
+  role: Role;
+
 }

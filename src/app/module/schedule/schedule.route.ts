@@ -15,3 +15,5 @@ router.get("/",checkAuth([Role.ADMIN,Role.SUPER_ADMIN,Role.DOCTOR]))
 router.get("/:id",checkAuth([Role.ADMIN,Role.SUPER_ADMIN,Role.DOCTOR]) ,scheduleController.getSingleSchedule)
 router.patch("/:id",checkAuth([Role.ADMIN,Role.SUPER_ADMIN]),validateRequest( updatezodschema), scheduleController.updateSchedule) 
 router.delete("/:id",checkAuth([Role.ADMIN,Role.SUPER_ADMIN]), scheduleController.deleteSchedule)
+
+export const ScheduleRoutes = router;

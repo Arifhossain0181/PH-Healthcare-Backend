@@ -16,6 +16,16 @@ import qs from "qs";
 import cron from "node-cron";
 import { AppointmentService } from "./app/module/appointment/appointment.service";
 import { PatientRoute } from "./app/module/Patitent/Patient.route";
+import { ReviewRoutes } from "./app/module/review/review.route";
+import { AppointmentRoutes } from "./app/module/appointment/appointment.route";
+import { DoctorScheduleRoutes } from "./app/module/doctorSchedule/doctorSchedule.route";
+import { StatsRoutes } from "./app/module/stats/stats.route";
+import { PrescriptionRoutes } from "./app/module/PrescriPtion/PrescriPtion.route";
+import { doctorRoute as doctorRouter } from "./app/module/doctor/doctor.route";
+import { adminRoute as adminRouter } from "./app/module/admin/admin.route";
+import { superAdminRoute as superAdminRouter } from "./app/module/superAdmin/superAdmin.route";
+import { PaymentRoutes } from "./app/module/Payment/Payment.route";
+import { ScheduleRoutes } from "./app/module/schedule/schedule.route";
 
 const app: Application = express();
 app.set("query parser",(str : string ) => qs.parse(str));
@@ -63,6 +73,18 @@ app.use("/api/v1/speciality", specialityRouter);
 //doctor router
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/patients", PatientRoute);
+app.use("/api/v1/stats", StatsRoutes);
+app.use("/api/v1/prescriptions",  PrescriptionRoutes );
+app.use("/api/v1/reviews", ReviewRoutes);
+app.use("/api/v1/appointments", AppointmentRoutes);
+app.use("/api/v1/doctors", doctorRouter); 
+app.use("/api/v1/admins", adminRouter);
+app.use("/api/v1/super-admins", superAdminRouter);
+app.use("/api/v1/payments", PaymentRoutes);
+app.use("/api/v1/schedules", ScheduleRoutes);
+app.use("/api/v1/doctorschedules", DoctorScheduleRoutes);
+
+  
 
 
   
