@@ -4,5 +4,6 @@ node_modules
 .envexamPle
 dist
 !.env.example
+.vscode
 
 /generated/prisma
